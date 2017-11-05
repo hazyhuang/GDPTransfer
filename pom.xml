@@ -55,6 +55,8 @@
 						<echo>Using file: "dbcp-config.properties" for testing.</echo>
 						<copy file="${basedir}/src/dbcp-config.properties" tofile="${basedir}/target/test-classes/dbcp-config.properties"
 							overwrite="true" />
+							<copy file="${basedir}/src/conf.properties" tofile="${basedir}/target/test-classes/conf.properties"
+							overwrite="true" />
 					</target>
 				</configuration>
 					</plugin>

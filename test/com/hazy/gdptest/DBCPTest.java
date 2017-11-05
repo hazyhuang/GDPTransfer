@@ -9,6 +9,8 @@ import org.junit.Test;
 import com.hazy.common.HazyUtil;
 import com.hazy.pool.DataBasePoolFactory;
 
+import net.sf.json.JSONObject;
+
 public class DBCPTest {
 	static Logger logger = Logger.getLogger(DBCPTest.class);
 	@Before
@@ -30,5 +32,12 @@ public class DBCPTest {
 			System.out.println(ss[i]);
 		}
 		
+	}
+	@Test
+	public void testJSON(){
+		String xx="{\"x\":\"0\"}";
+		JSONObject jobj=JSONObject.fromObject(xx);
+		Integer x=Integer.valueOf((String)jobj.get("x"));
+		System.out.println("x:"+x);
 	}
 }
