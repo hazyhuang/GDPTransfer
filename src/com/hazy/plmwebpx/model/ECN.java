@@ -20,7 +20,7 @@ public class ECN {
 	
 	public JSONObject toJSON() {
 	JSONObject jObj=new JSONObject();
-	jObj.put("index", Number);
+	jObj.put("index", ObjectID);
 	jObj.put("value", Number);
 	return jObj;
 	}

@@ -15,9 +15,9 @@ import com.hazy.common.HazyException;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 
-import net.sf.json.JSONArray;
-public class AgileListServlet extends HttpServlet{
-	 private static Logger logger = Logger.getLogger(AgileListServlet.class);
+import net.sf.json.JSONObject;
+public class GDPTransferServlet extends HttpServlet{
+	 private static Logger logger = Logger.getLogger(GDPTransferServlet.class);
 		
 
 	/**
@@ -45,23 +45,19 @@ public class AgileListServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 		this.service=new GDPTransferService(session);
-		JSONArray jsonArray2 =null;
+		JSONObject retJSON =new JSONObject();
+		
 		String action="";
 		if (request.getParameter("action") != null) {
 			action = request.getParameter("action");
 		}
 		try {
-		if("ecn".equals(action)) {
-			jsonArray2 =	service.getECNJSON();
-		}else if("doc".equals(action)) {
-			jsonArray2 =	service.getDocumentJSON();
-		}else if("specreview".equals(action)) {
-			jsonArray2 = (JSONArray)getServletContext().getAttribute(Agile_List_WebKey);
-			if(jsonArray2==null) {
-				jsonArray2=service.getSpecReivewList();
-			}
-		    getServletContext().setAttribute(Agile_List_WebKey, jsonArray2);
+		if("loadReview".equals(action)) {
+			String changeNumber=(String)request.getSession().getAttribute("agile.1047");
+			String userid=(String)request.getSession().getAttribute("agile.userName");
 			
+			retJSON.put("success", true);
+			retJSON.put("msg", service.getGDPTransfer(changeNumber, userid));
 		}
 		}catch(SQLException ex) {
 			ex.printStackTrace();
@@ -69,12 +65,9 @@ public class AgileListServlet extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    logger.info("JSON:"+jsonArray2);
+	    logger.info("JSON:"+retJSON);
 		response.setContentType("text/json;charset=UTF-8"); 
-
-		response.getWriter().write(jsonArray2.toString());
-		
-		
+		response.getWriter().write(retJSON.toString());
 	}
 
 

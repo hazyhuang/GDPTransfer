@@ -3,13 +3,13 @@ package com.hazy.plmwebpx.model;
 import net.sf.json.JSONObject;
 
 public class ListItem {
-	String id;
+	String APIName;
 	String text;
-	public String getId() {
-		return id;
+	public String getAPIName() {
+		return APIName;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setAPIName(String id) {
+		this.APIName = id;
 	}
 	public String getText() {
 		return text;
@@ -19,8 +19,8 @@ public class ListItem {
 	}
 	public JSONObject toJSON() {
 		JSONObject jObj=new JSONObject();
-		jObj.put("index", text);
-		jObj.put("value", id);
+		jObj.put("value", text);
+		jObj.put("index", APIName);
 		return jObj;
 		}
 

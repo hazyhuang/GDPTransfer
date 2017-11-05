@@ -5,11 +5,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
 
-
-public class JSONServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
-	public JSONServlet() {
+public class ManagerServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+	public ManagerServlet() {
 		super();
 	}
 
@@ -17,8 +15,7 @@ public class JSONServlet extends javax.servlet.http.HttpServlet implements javax
 			throws ServletException, IOException {
 		String json = readJSONString(request);
 		System.out.println("JSON:"+json);
-		JSONObject jobj=JSONObject.fromObject(json);
-		System.out.println("JSONObject:"+jobj);
+
 	}
 
 	private String readJSONString(HttpServletRequest request) {
