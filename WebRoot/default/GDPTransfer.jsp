@@ -41,7 +41,7 @@ input {
 <script type="text/javascript">
     var doclist;
     var ecnlist;
-    //http://172.16.90.32:7001/Agile/PLMServlet?action=OpenEmailObject&classid=10000
+    //http://agileplm:7001/Agile/PLMServlet?action=OpenEmailObject&classid=9000&objid=6758066
     var thisurl=  "<%=request.getContextPath()%>/default/GDPTransfer.jsp";      
 </script>
 </head>

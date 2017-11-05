@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
   <display-name>GDPTransfer</display-name>
+  
   <servlet>
     <description>Log4j Init</description>
     <display-name>Log4j Init</display-name>
@@ -12,6 +13,16 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  
+   <servlet>
+    <servlet-name>ListServlet</servlet-name>
+    <servlet-class>com.hazy.gdptransfer.AgileListServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ListServlet</servlet-name>
+    <url-pattern>/default/ListServlet</url-pattern>
+  </servlet-mapping>
+ 
   <servlet>
     <servlet-name>jsonServlet</servlet-name>
     <servlet-class>com.hazy.gdptransfer.JSONServlet</servlet-class>
@@ -20,6 +31,7 @@
     <servlet-name>jsonServlet</servlet-name>
     <url-pattern>/default/JSONServlet</url-pattern>
   </servlet-mapping>
+  
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

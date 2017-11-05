@@ -109,7 +109,7 @@ var ecnlist;
 var reviewlist;
 function init() {
 	$.ajax({
-		url : 'doclist.json',
+		url : 'ListServlet?action=doc',
 		dataType : 'json',
 		async : false,
 		success : function(result) {
@@ -117,7 +117,7 @@ function init() {
 		}
 	});
 	$.ajax({
-		url : 'ecnlist.json',
+		url : 'ListServlet?action=ecn',
 		dataType : 'json',
 		async : false,
 		success : function(result) {

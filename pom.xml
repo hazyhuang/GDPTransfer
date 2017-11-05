@@ -7,6 +7,7 @@
 	<packaging>war</packaging>
 	<name>GDPTransfer</name>
 	<build>
+	<finalName>GDPTransfer</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
@@ -18,6 +19,7 @@
 			</resource>
 		</resources>
 		<plugins>
+		
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.6.1</version>
@@ -33,7 +35,80 @@
 					<warSourceDirectory>WebRoot</warSourceDirectory>
 				</configuration>
 			</plugin>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					
+					<execution>
+						<id>mvn-antrun-process-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<target>
+						<!-- copy the log.xml file into the test-class directory -->
+						<echo>Using file: "dbcp-config.properties" for testing.</echo>
+						<copy file="${basedir}/src/dbcp-config.properties" tofile="${basedir}/target/test-classes/dbcp-config.properties"
+							overwrite="true" />
+					</target>
+				</configuration>
+					</plugin>
+			 <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <!-- server、username、password对应maven的setting下的配置 -->
+                    <server>tomcat</server>
+                    <username>admin</username>
+                    <password>admin</password>
+                    <path>/${project.build.finalName}</path>
+                    <!-- war文件路径缺省情况下指向target -->
+                    <!--<warFile>${basedir}/target/${project.build.finalName}.war</warFile>-->
+                </configuration>
+            </plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-antrun-plugin
+										</artifactId>
+										<versionRange>
+											[1.8,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<dependencies>
 		<dependency>
@@ -66,9 +141,18 @@
 				<artifactId>HazyCommon</artifactId>
 			
 			</dependency>
+				<dependency>
+				<groupId>ojdbc</groupId>
+				<artifactId>ojdbc</artifactId>
+			</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>ojdbc</groupId>
+				<artifactId>ojdbc</artifactId>
+				<version>14</version>
+			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>javax.servlet-api</artifactId>

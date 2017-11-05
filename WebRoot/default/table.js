@@ -38,7 +38,7 @@ function getEnabledLinkTD(newTD,tdID,count,value,width){
     newTD.id = tdID;
     newTD.setAttribute("class", "GMColorNoFocus GMRow GMText GMCell");
     newTD.setAttribute("className","GMColorNoFocus GMRow GMText GMCell");
-    newTD.innerHTML = " <A href='http://172.16.90.32:7001/Agile/PLMServlet?action=OpenEmailObject&classid=10000'>"+ value + "</A> ";
+    newTD.innerHTML = " <A href='http://agileplm:7001/Agile/PLMServlet?action=OpenEmailObject&classid=9000&objid=6758066'>"+ value + "</A> ";
 }
 
 function alertflag(flagname) {

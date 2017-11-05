@@ -1,7 +1,7 @@
-var approve = "approve";
+var action = "approve";
 var changeNumber;
 function reject() {
-	approve = "reject";
+	action = "reject";
 	approve();
 }
 
@@ -14,7 +14,7 @@ function approve() {
 	var changeJSON = {
 		"changeNumber" : changeNumber,
 		"managerID" : "",
-		"managerApprove" : approve,
+		"managerApprove" : action,
 		"itemRecords" : [],
 		"managerReviewRecord" : $("#comment").val()
 	};
