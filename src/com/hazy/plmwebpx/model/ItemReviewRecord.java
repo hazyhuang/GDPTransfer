@@ -9,6 +9,7 @@ public class ItemReviewRecord {
 	private Integer rowid=0;
 	private String userid;
 	private String specReview;
+	private String specReviewValue;
 	private String reason;
 	private Integer docId=0;
 	private Integer ecnId=0;
@@ -34,23 +35,34 @@ public class ItemReviewRecord {
 
 		Object docidObj=jObj.get("docId");
 		if(docidObj!=null&&!"".equals(docidObj)) {
-		record.setRowid(Integer.valueOf((String)docidObj));
+		record.setDocId(Integer.valueOf((String)docidObj));
 		}
 		Object ecnIdObj=jObj.get("ecnId");
-		if(rowidObj!=null&&!"".equals(ecnIdObj)) {
-		record.setRowid(Integer.valueOf((String)ecnIdObj));
+		if(ecnIdObj!=null&&!"".equals(ecnIdObj)) {
+		record.setEcnId(Integer.valueOf((String)ecnIdObj));
 		}
 		
 		record.setDocNumber((String)jObj.get("docNumber"));
 		record.setEcnNumber((String)jObj.get("ecnNumber"));
 		record.setUsername((String)jObj.get("username"));
+		record.setSpecReviewValue((String)jObj.get("specReviewValue"));
 		return record;
 	}
+	
+	public String getSpecReviewValue() {
+		return specReviewValue;
+	}
+
+	public void setSpecReviewValue(String specReviewValue) {
+		this.specReviewValue = specReviewValue;
+	}
+
 	public JSONObject toJSON() {
 		JSONObject jObj = new JSONObject();
 		jObj.put("rowid", this.rowid);
 		jObj.put("userid", this.userid);
 		jObj.put("specReview", this.specReview);
+		jObj.put("specReviewValue", this.specReviewValue);
 		jObj.put("reason", this.reason);
 		jObj.put("docId", this.docId);
 		jObj.put("ecnId", this.ecnId);

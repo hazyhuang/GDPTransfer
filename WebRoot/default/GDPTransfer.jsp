@@ -39,8 +39,9 @@ input {
 <script type="text/javascript" src="GDPTransfer.js"></script>
 
 <script type="text/javascript">
-    var doclist;
-    var ecnlist;
+    var userid='<%=request.getParameter("agile.userName")%>'//userid
+	var chgnum='<%=request.getParameter("agile.1047")%>'
+		var username='<%=request.getAttribute("fullName")%>'
     //http://agileplm:7001/Agile/PLMServlet?action=OpenEmailObject&classid=9000&objid=6758066
     var thisurl=  "<%=request.getContextPath()%>/default/GDPTransfer.jsp";      
 </script>
@@ -54,7 +55,7 @@ input {
 		</tr>
 		<tr>
 			<td colspan=2>
-			<div id="msg" style="color:#F00"></div>
+			<div id="msg" style="color:#F00">请不要关闭窗口,正在加载数据...</div>
 			<div style="overflow-x:scroll;width:1300px;white-space:nowrap;">
 				<table>
 					<tr>

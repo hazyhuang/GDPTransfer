@@ -29,8 +29,7 @@ public class GDPTransferServlet extends HttpServlet{
 			throws ServletException, IOException {
 		doPost(request,response);
 	}
-	GDPTransferService service=null;
-	static String Agile_List_APIName=""; 
+	private GDPTransferService service=null;
 	static String Agile_List_WebKey="Agile_List_WebKey";
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -52,12 +51,15 @@ public class GDPTransferServlet extends HttpServlet{
 			action = request.getParameter("action");
 		}
 		try {
-		if("loadReview".equals(action)) {
 			String changeNumber=(String)request.getSession().getAttribute("agile.1047");
 			String userid=(String)request.getSession().getAttribute("agile.userName");
 			
+		if("loadReview".equals(action)) {
 			retJSON.put("success", true);
 			retJSON.put("msg", service.getGDPTransfer(changeNumber, userid));
+		}else if("loadManager".equals(action)){
+			retJSON.put("success", true);
+			retJSON.put("msg", service.getGDPManager(changeNumber, userid));
 		}
 		}catch(SQLException ex) {
 			ex.printStackTrace();

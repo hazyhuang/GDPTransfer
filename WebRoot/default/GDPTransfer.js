@@ -1,3 +1,4 @@
+
 function savedata() {
 	url = "<%=request.getContextPath()%>/default/GDPTransfer.jsp";
 	var reload = true;
@@ -12,16 +13,21 @@ function savedata() {
 		var ID = 0;
 		var flag = "N";
 		var specReview = "";
+		var specReviewValue ="";
 		var reason = "";
 		var documentNumber = "";
+		var docid="";
+		
 		var ECNNumber = "";
-		var userid = $('#userid' + num).val();
+		var ecnid="";
+		//var userid = $('#userid' + num).val();
 		var row = i - 1;
 		flag = $('#flag' + num).val();
 		if (flag == "Y") {
 			ID = $('#ID' + num).val();
 
 			specReview = $('#specReview' + num).combobox("getValue");
+			specReviewValue = $('#specReview' + num).combobox("getText");
 			if (specReview == '') {
 				alert("第" + (row+1) + "行,specReview不能为空!");
 				reload = false;
@@ -29,41 +35,50 @@ function savedata() {
 			}
 			if ($('#reason' + num).val() != '')
 				reason = $('#reason' + num).val();
-			if (specReview == "NoInvole") {
+			if (specReview == "0") {
                 if(reason==''){
 				alert("第" + (row+1) + "行,不涉及则  原因不能为空!");
 				reload = false;
 				return;
 			    }
 			}
-			else if (specReview != "NoInvole") {
-				documentNumber = $('#documentNumber' + num)
+			else if (specReview != "0") {
+				docid = $('#documentNumber' + num)
 						.combobox("getValue");
-
+				documentNumber = $('#documentNumber' + num)
+				.combobox("getText");
 				if (documentNumber == "") {
 					alert("第" + (row+1) + "行,DocumentNumber 不能为空!");
 					reload = false;
 					return;
 				}
 
-				ECNNumber = $('#ECNNumber' + num).combobox("getValue");
-				if (ECNNumber == "") {
+				ecnid= $('#ECNNumber' + num).combobox("getValue");
+				 ECNNumber= $('#ECNNumber' + num)
+				.combobox("getText");
+				/*if (ECNNumber == "") {
 					alert("第" + (row+1) + "行,ECNNumber 不能为空!");
 					reload = false;
 					return;
-				}
+				}*/
 			}
 			var itemjson = {
+				
 				"itemNumber" : $('#itemNumber' + num).val(),
 				"description" : "",
 				"rev" : "",
 				"managerReviewRecord" : "",
 				"itemReviewRecords" : [ {
+					"rowid":ID,
 					"userid" : userid,
+					"username":username,
 					"specReview" : specReview,
+					"specReviewValue":specReviewValue,
 					"reason" : reason,
-					"documentNumber" : documentNumber,
-					"ECNNumber" : ECNNumber
+					"docNumber" : documentNumber,
+					"docId":docid,
+					"ecnNumber" : ECNNumber,
+					"ecnId":ecnid
 				} ]
 			};
 			changeJSON.itemRecords.push(itemjson);
@@ -73,37 +88,37 @@ function savedata() {
 
 	$.ajax({
 		type : "POST",
-		url : "JSONServlet",
+		url : "TransferServlet",
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(changeJSON),
-		complete : function(xhr, exception) {
-			alert("success错误提示： " + xhr.status + " " + xhr.statusText + " "
-					+ exception);
-			alert("请求已提交！我们会尽快与您取得联系");
+		success : function(xhr, exception) {
+			/*alert("success错误提示： " + xhr.status + " " + xhr.statusText + " "
+					+ exception);*/
+			alert("已提交，请关闭窗口");
 
 		},
 		error : function(xhr, textStatus, errorThrown) {
-			alert("错误提示： " + xhr.status + " " + xhr.statusText + " "
-					+ textStatus + " " + errorThrown);
+			/*alert("错误提示： " + xhr.status + " " + xhr.statusText + " "
+					+ textStatus + " " + errorThrown);*/
 			$("#msg").html("提交数据失败！");
 		}
 	});
 	if (reload) {
-		alert("更新成功!");
+		//alert("更新成功!");
 		// window.location.replace(thisurl);
 	}
 }
 
 function getInitChangeJson() {
 	var initChangeJson = {
-		"changeNumber" : changeNumber,
+		"changeNumber" : chgnum,
 		"managerID" : "",
 		"managerApprove" : "",
 		"itemRecords" : []
 	};
 	return initChangeJson;
 }
-var changeNumber;
+
 var doclist;
 var ecnlist;
 var reviewlist;
@@ -125,7 +140,7 @@ function init() {
 		}
 	});
 	$.ajax({
-		url : 'reviewlist.json',
+		url : 'ListServlet?action=specreview',
 		dataType : 'json',
 		async : false,
 		success : function(result) {
@@ -134,23 +149,26 @@ function init() {
 	});
 }
 function loadData() {
+	
 	init();
 	var datalist;
 	$.ajax({
-		url : 'initGDPReview.json',
+		url : 'GDPTransferServlet?action=loadReview',
 		dataType : 'json',
 		async : false,
 		success : function(result) {
-			if (result.success == 'true') {
+			if (result.success) {
 				datalist = result.msg.itemRecords;
-				changeNumber = result.msg.changeNumber;
+				//changeNumber = result.msg.changeNumber;
 				loadTitle(datalist);
 				loadList(datalist);
+				$("#msg").html("");
 			} else {
 				$("#msg").html("错误信息:" + result.msg + " <br>请关闭窗口！");
 			}
 		}
 	});
+	$("#msg").html("");
 }
 
 function loadTitle(recordList) {
@@ -184,12 +202,17 @@ function loadList(datalist) {
 	for (var j = 0; j < datalist.length; j++) {
 		var count = Math.ceil(document.getElementById('recordcount').value);
 		// 'class'='GMDataRow' 'className'='GMDataRow'
+		var itemReviewRecords = datalist[j].itemReviewRecords;
+		var itemReview;
+		for (var k = 0; k < itemReviewRecords.length; k++) {
+			itemReview = itemReviewRecords[k];
+		}
 		var newTr = "<tr id='tr" + count + "'></tr>"
 		$("#recordlist").append(newTr);
 		var newTd0 = "<td 'class'='GMColorNoFocus GMRow GMText GMCell'"
 				+ " 'className'='GMColorNoFocus GMRow GMText GMCell'></td>"
 		$("#tr" + count).append(newTd0);
-		var newTd1 = getHideInputTD("rowid", count, datalist[j].rowid, 150);// (newTD,tdID,count,value,width)
+		var newTd1 = getHideInputTD( count, itemReview.rowid, 150);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd1);
 		var newTd2 = getDisabledTextAreaTD("itemNumber", count,
 				datalist[j].itemNumber, 150);// (newTD,tdID,count,value,width)
@@ -199,11 +222,7 @@ function loadList(datalist) {
 		$("#tr" + count).append(newTd3);
 		var newTd4 = getDisabledTextAreaTD("rev", count, datalist[j].rev, 80);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd4);
-		var itemReviewRecords = datalist[j].itemReviewRecords;
-		var itemReview;
-		for (var k = 0; k < itemReviewRecords.length; k++) {
-			itemReview = itemReviewRecords[k];
-		}
+		
 		var newTd5 = getEnabledSelectJQueryTD("specReview", count,
 				itemReview.specReview, 100);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd5);
@@ -212,13 +231,13 @@ function loadList(datalist) {
 				200);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd6);
 		var newTd7 = getEnabledSelectJQueryTD("documentNumber", count,
-				itemReview.documentNumber, 150);// (newTD,tdID,count,value,width)
+				itemReview.docNumber, 150);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd7);
-		registerChange("documentNumber", count, itemReview.documentNumber,doclist);
+		registerChange("documentNumber", count, itemReview.docNumber,doclist);
 		var newTd8 = getEnabledSelectJQueryTD("ECNNumber", count,
-				itemReview.ECNNumber, 150);// (newTD,tdID,count,value,width)
+				itemReview.ecnNumber, 150);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd8);
-		registerChange("ECNNumber", count, itemReview.ECNNumber,ecnlist);
+		registerChange("ECNNumber", count, itemReview.ecnNumber,ecnlist);
 
 		var newTd9 = getDisabledTextAreaTD("managerReviewRecord", count,
 				datalist[j].managerReviewRecord, 300);// (newTD,tdID,count,value,width)
@@ -231,12 +250,12 @@ function loadList(datalist) {
 	}
 }
 
-function getHideInputTD(tdID, count, value, width) {
+function getHideInputTD(count, value, width) {
 	var newTD = "<td 'class'='GMColorNoFocus GMRow GMText GMCell'"
 			+ " 'className'='GMColorNoFocus GMRow GMText GMCell'>"
 			+ "<input id='flag" + count
 			+ "' value='N' type='hidden'/> <input type='hidden' id='ID" + count
-			+ "' value='" + value + "'></td>";
+			+ "' value=" + value + "></td>";
 	return newTD;
 }
 
@@ -280,7 +299,10 @@ function registerChange(inputName, count, value,datalist) {
 		}
 	});
 	$("#" + inputName + count).combobox({data:datalist});
+	console.log("Value:"+value);
+	
 	$("#" + inputName + count).combobox('setValue', value);
+
 }
 
 function alertflag(flagname) {

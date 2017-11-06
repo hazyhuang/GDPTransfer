@@ -1,25 +1,20 @@
 package com.hazy.plmwebpx.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.agile.api.APIException;
-import com.agile.api.ChangeConstants;
-import com.agile.api.IChange;
-import com.agile.api.IRow;
-import com.agile.api.ITable;
-import com.agile.api.IUser;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class ChangeRecord {
+	Integer rowid=0;
 	String changeNumber;
 	String managerID;
 	String managerApprove;
+	String comment;
 	Collection<ItemRecord> itemRecords;
 	
 	public ChangeRecord() {
@@ -48,6 +43,12 @@ public ChangeRecord(String chgNum) {
 
 
 
+	public Integer getRowid() {
+		return rowid;
+	}
+	public void setRowid(Integer rowid) {
+		this.rowid = rowid;
+	}
 	public String getChangeNumber() {
 		return changeNumber;
 	}
@@ -69,8 +70,16 @@ public ChangeRecord(String chgNum) {
 	public Collection<ItemRecord> getItemRecords() {
 		return itemRecords;
 	}
+	
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 	public JSONObject toJSON() {
 			JSONObject jObj=new JSONObject();
+			jObj.put("rowid", this.rowid);
 			jObj.put("changeNumber", this.changeNumber);
 			jObj.put("managerID", this.managerID);
 			jObj.put("managerApprove", this.managerApprove);
@@ -89,9 +98,14 @@ public ChangeRecord(String chgNum) {
 	
 	public static ChangeRecord createChangeRecord(JSONObject jObj) {
 		ChangeRecord chgRecord=new ChangeRecord();
+		
+		
+		chgRecord.setRowid((Integer)jObj.get("rowid"));
+		
 		chgRecord.setChangeNumber((String)jObj.get("changeNumber"));
 		chgRecord.setManagerID((String)jObj.get("managerID"));
 		chgRecord.setManagerApprove((String)jObj.get("managerApprove"));
+		
 		JSONArray array=jObj.getJSONArray("itemRecords");
 		Collection<ItemRecord> list=new ArrayList<ItemRecord>();
 		Iterator iter=array.iterator();

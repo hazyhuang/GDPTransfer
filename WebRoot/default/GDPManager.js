@@ -1,5 +1,7 @@
 var action = "approve";
 var changeNumber;
+var userid;
+var changerowid;
 function reject() {
 	action = "reject";
 	approve();
@@ -12,11 +14,12 @@ function approve() {
 	var rowscount = table.rows.length;
 	var count = 0;
 	var changeJSON = {
+		"rowid": changerowid,
 		"changeNumber" : changeNumber,
-		"managerID" : "",
+		"managerID" : userid,
 		"managerApprove" : action,
-		"itemRecords" : [],
-		"managerReviewRecord" : $("#comment").val()
+		"itemRecords" : []
+		//"managerReviewRecord" : $("#comment").val()
 	};
 	for (i = 1; i < rowscount; i++) {
 		var tempid = table.rows[i].id;
@@ -31,6 +34,7 @@ function approve() {
 
 		flag = $('#flag' + num).val();
 		var itemNumber = $('#itemNumber' + num).val();
+		console.log("itemNumber"+num+":"+itemNumber);
 		if (flag == "Y") {
 			ID = $('#ID' + num).val();
 
@@ -43,6 +47,7 @@ function approve() {
 			}
 
 			var itemjson = {
+				"rowid":ID,
 				"itemNumber" : itemNumber,
 				"description" : "",
 				"rev" : "",
@@ -56,39 +61,45 @@ function approve() {
 
 	$.ajax({
 		type : "POST",
-		url : "JSONServlet",
+		url : "ManagerServlet",
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(changeJSON),
 		success : function(xhr, exception) {
 			// alert("success错误提示： " + xhr.status + " "
 			// + xhr.statusText+" "+exception);
-			alert("已提交！");
+			alert("已提交！请关闭窗口");
 		},
 		error : function(xhr, textStatus, errorThrown) {
 			$("#msg").html("提交数据失败！");
 		}
 	});
 	if (reload) {
-		alert("更新成功!");
+		//alert("更新成功!");
 		// window.location.replace(thisurl);
 	}
 }
 
 function loadData() {
+	
 	var itemRecordList;
-	$.getJSON("initGDPManager.json", function(result) {
+	$.getJSON("GDPTransferServlet?action=loadManager", function(result) {
 		console.log(result);
 		console.log(result.success);
-		if (result.success == 'true') {
+		if (result.success) {
 			itemRecordList = result.msg.itemRecords;
 			changeNumber = result.msg.changeNumber;
+			changerowid = result.msg.rowid;
+			console.log("changerowid:"+changerowid);
+			userid=result.msg.managerID;
 			loadTitle(itemRecordList);
 			loadList(itemRecordList);
+			$("#msg").html("");
 		} else {
 			console.log("错误信息");
 			$("#msg").html("错误信息:" + result.msg + " <br>请关闭窗口！");
 		}
 	});
+
 }
 
 function loadTitle(recordList) {
@@ -164,7 +175,7 @@ function loadList(recordList) {
 			itemReview = itemReviewRecords[k];
 			var newTd5 = newTr.insertCell(row);
 			getDisabledTextAreaTD(newTd5, "specReview", count,
-					itemReview.specReview, 100);
+					itemReview.specReviewValue, 100);
 			row = row + 1;
 			var newTd6 = newTr.insertCell(row);
 			getDisabledTextAreaTD(newTd6, "reason", count, itemReview.reason,
@@ -172,10 +183,10 @@ function loadList(recordList) {
 			row = row + 1;
 			var newTd7 = newTr.insertCell(row);
 			getEnabledLinkTD(newTd7, "documentNumber", count,
-					itemReview.documentNumber, 150);
+					itemReview.docNumber,"9000",itemReview.docId, 150);
 			row = row + 1;
 			var newTd9 = newTr.insertCell(row);
-			getEnabledLinkTD(newTd9, "ECNNumber", count, itemReview.ECNNumber,
+			getEnabledLinkTD(newTd9, "ECNNumber", count, itemReview.ecnNumber,"6000",itemReview.ecnId,
 					150);
 			row = row + 1;
 		}

@@ -84,7 +84,12 @@ public class ItemRecord {
 
 	public static ItemRecord createItemRecord(JSONObject jObj) {
 		ItemRecord record=new ItemRecord();
-		record.setRowid(Integer.valueOf((String)jObj.get("rowid")));
+		
+		Object rowidObj=jObj.get("rowid");
+		if(rowidObj!=null&&!"".equals(rowidObj)) {
+		record.setRowid(Integer.valueOf((String)rowidObj));
+		}
+		
 		Object itemidObj=jObj.get("itemid");
 		if(itemidObj!=null&&!"".equals(itemidObj)) {
 		record.setItemid(Integer.valueOf((String)itemidObj));

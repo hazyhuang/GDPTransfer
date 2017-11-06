@@ -91,6 +91,9 @@ cc4:<input id="cc4" class="easyui-combobox" name="dept"
 <table border="1" id="table1">
 <tr id='tr1'></tr>
 </table>
+<button id=savebtn class=button onClick='javascript:savedata();'>
+						<SPAN id=generatespan>提交&nbsp;</SPAN>
+					</button>
 <script type="text/javascript">
    
     $("#tr1").append("<td>"+getInnerTD()+"</td>");
@@ -102,7 +105,11 @@ cc4:<input id="cc4" class="easyui-combobox" name="dept"
 	    return inner;
 	 
 	}
-
+    function savedata(){
+    	var value=$('#xx').combobox("getValue");
+    	var text=$('#xx').combobox("getText");
+    	console.log(text+":"+value);
+    }
  
     $('#cc5').combobox(
         {

@@ -1,6 +1,8 @@
 package com.hazy.gdptransfer;
 
 import java.io.*;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +15,6 @@ import com.hazy.common.HazyException;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.plmwebpx.model.ChangeRecord;
-import com.hazy.plmwebpx.model.ItemReviewRecord;
 
 import net.sf.json.JSONObject;
 
@@ -43,7 +44,13 @@ public class TransferServlet extends javax.servlet.http.HttpServlet implements j
 		JSONObject jObj=JSONObject.fromObject(json);
 		logger.debug("jsonObject:"+jObj);
         ChangeRecord changeRecord=ChangeRecord.createChangeRecord(jObj);
-        this.service.updateGDPTransfer(changeRecord);
+        try {
+			this.service.updateGDPTransfer(changeRecord);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
 	}
 
 	private String readJSONString(HttpServletRequest request) {

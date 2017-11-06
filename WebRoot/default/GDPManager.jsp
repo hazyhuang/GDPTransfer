@@ -30,11 +30,12 @@ input {
 <script type="text/javascript" src="GDPManager.js"></script>
 <script type="text/javascript">
     var thisurl=  "<%=request.getContextPath()%>/default/GDPManager.jsp";      
-
+    var agileurl="<%=request.getAttribute("agileurl")%>";
   
 </script>
 </head>
 <body>
+
 	<input name="recordcount" value="0" type="hidden" class="formElm"
 		size="8" id="recordcount" />
 	<table>
@@ -43,7 +44,7 @@ input {
 		</tr>
 		<tr>
 			<td colspan=2>
-			<div id="msg" style="color:#F00"></div>
+			<div id="msg" style="color:#F00">请不要关闭窗口,正在加载数据...</div>
 			<div style="overflow-x:scroll;width:1300px;white-space:nowrap;">
 				<table>
 					<tr>
@@ -66,8 +67,6 @@ input {
 			<td align="left" valign="middle"
 				style="BACKGROUND-COLOR: rgb(239, 239, 239)">
 				<div id="savecancel">
-					 &nbsp;&nbsp;审批意见:
-					<textarea id="comment" rows='3' style='width:300px;'></textarea>
 					&nbsp;&nbsp;
 					<button id=rejectbtn class=button
 						onClick='javascript:reject();'>
@@ -77,6 +76,7 @@ input {
 					<button id=approvebtn class=button onClick='javascript:approve();'>
 						<SPAN id=generatespan>批准&nbsp;</SPAN>
 					</button>
+					
 				</div>
 			</td>
 			<td style='BACKGROUND-COLOR: rgb(239, 239, 239)'></td>

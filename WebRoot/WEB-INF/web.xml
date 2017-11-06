@@ -13,6 +13,42 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+    <servlet>
+    <servlet-name>GDPServlet</servlet-name>
+    <servlet-class>com.hazy.gdptransfer.GDPServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GDPServlet</servlet-name>
+    <url-pattern>/default/GDPServlet</url-pattern>
+  </servlet-mapping>
+
+    
+    <servlet>
+    <servlet-name>GDPTransferServlet</servlet-name>
+    <servlet-class>com.hazy.gdptransfer.GDPTransferServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GDPTransferServlet</servlet-name>
+    <url-pattern>/default/GDPTransferServlet</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>TransferServlet</servlet-name>
+    <servlet-class>com.hazy.gdptransfer.TransferServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TransferServlet</servlet-name>
+    <url-pattern>/default/TransferServlet</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>ManagerServlet</servlet-name>
+    <servlet-class>com.hazy.gdptransfer.ManagerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ManagerServlet</servlet-name>
+    <url-pattern>/default/ManagerServlet</url-pattern>
+  </servlet-mapping>
   
    <servlet>
     <servlet-name>ListServlet</servlet-name>
