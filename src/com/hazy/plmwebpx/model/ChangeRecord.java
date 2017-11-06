@@ -10,12 +10,12 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class ChangeRecord {
-	Integer rowid=0;
-	String changeNumber;
-	String managerID;
-	String managerApprove;
-	String comment;
-	Collection<ItemRecord> itemRecords;
+	private Integer rowid=0;
+	private String changeNumber;
+	private String managerID;
+	private String managerApprove;
+	private String comment;
+	private Collection<ItemRecord> itemRecords;
 	
 	public ChangeRecord() {
 		
@@ -33,16 +33,6 @@ public ChangeRecord(String chgNum) {
 		this.itemRecords=itemRecords;
 	}
 	
-/*	public Collection<ItemRecord> getItemRecords() {
-		return itemRecords;
-	}
-
-	public void setItemRecords(Collection<ItemRecord> itemRecords) {
-		this.itemRecords = itemRecords;
-	}*/
-
-
-
 	public Integer getRowid() {
 		return rowid;
 	}
@@ -118,43 +108,6 @@ public ChangeRecord(String chgNum) {
 		return chgRecord;
 	}
 	
-/*	public void setItemRecordInfo(DbConnect db, IChange change, ArrayList<IUser> reviewUserList,IUser managerUser){
-		JSONArray itemRecordsArry = new JSONArray();
-		try {
-			ResultSet rsOut = db.getmanagerApprover(change.getObjectId().toString(), managerUser.getObjectId().toString());
-			String manReviewInfo = "";
-			if (rsOut.next()){
-				manReviewInfo = rsOut.getString(1);
-				System.out.println(rsOut.getString(1));
-			}	
-			this.setChangeRecord(change.getName(),managerUser.getObjectId().toString(),manReviewInfo);
-			rsOut.close();
-			
-			ITable table = change.getTable(ChangeConstants.TABLE_AFFECTEDITEMS);		
-			Iterator it = table.iterator();		
-			while (it.hasNext()){
-				IRow row = (IRow)it.next();
-				ResultSet trsOut = db.getItemReord(row.getObjectId().toString());
-				//if (trsOut != null){
-					while (trsOut.next()) {
-						ItemRecord itemRecord = new ItemRecord(trsOut.getString(1),trsOut.getString(2),trsOut.getString(3),"");
-						itemRecord.setItemReviewInof(db,row,reviewUserList);
-						itemRecordsArry.add(itemRecord.toJSON());
-					}					 
-				//}
-				trsOut.close();
-			}
-			this.setItemRecords(itemRecordsArry);
-			
-			
-		} catch (APIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	*/
+
 	
 }

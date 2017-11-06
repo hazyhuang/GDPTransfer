@@ -27,15 +27,15 @@ public class GDPServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private GDPTransferService service = null;
 
-	// http://www.local.com:8080/GDPTransfer/GDPServlet?agile.classID=2486607&agile.1047=DIC0000002&agile.userName=admin&ContextType=DIC_%E5%8D%8E%E4%B8%BA%E6%96%87%E6%A1%A3%E8%BD%AC%E5%8C%96%E6%B5%81%E7%A8%8B&ContextName=DIC0000002
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 
 	}
 
-	private GDPTransferService service = null;
-
+	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userid = request.getParameter("agile.userName");// userid
 		String changeNumber = request.getParameter("agile.1047");// userid

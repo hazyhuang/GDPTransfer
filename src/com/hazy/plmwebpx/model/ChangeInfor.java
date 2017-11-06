@@ -3,9 +3,9 @@ package com.hazy.plmwebpx.model;
 import java.util.Collection;
 
 public class ChangeInfor {
-	String changeNumber;
-	String status;
-	Collection<AgileUser> reviewers;
+	private String changeNumber;
+	private String status;
+	private Collection<AgileUser> reviewers;
 	public ChangeInfor(String chgNum) {
 		this.changeNumber=chgNum;
 	}

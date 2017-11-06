@@ -3,8 +3,8 @@ package com.hazy.plmwebpx.model;
 import net.sf.json.JSONObject;
 
 public class ECN {
-	Object ObjectID;
-	String Number;
+	private Object ObjectID;
+	private String Number;
 	public Object getObjectID() {
 		return ObjectID;
 	}

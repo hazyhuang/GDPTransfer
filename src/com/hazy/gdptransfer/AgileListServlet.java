@@ -19,7 +19,7 @@ import net.sf.json.JSONArray;
 public class AgileListServlet extends HttpServlet{
 	 private static Logger logger = Logger.getLogger(AgileListServlet.class);
 		
-
+	 private GDPTransferService service=null;
 	/**
 	 * 
 	 */
@@ -29,8 +29,8 @@ public class AgileListServlet extends HttpServlet{
 			throws ServletException, IOException {
 		doPost(request,response);
 	}
-	GDPTransferService service=null;
-	static String Agile_List_APIName=""; 
+	
+	
 	static String Agile_List_WebKey="Agile_List_WebKey";
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

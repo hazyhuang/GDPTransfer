@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 public class AgileSessionHelper {
-	static Logger logger = Logger.getLogger(AgileSessionHelper.class);
+	private static Logger logger = Logger.getLogger(AgileSessionHelper.class);
 	private static IAgileSession session = null;
 	private static AgileSessionFactory factory;
 	private static String USERNAME = "";
 	private static String PASSWORD = "";
-	static String Session_WebKey="Agile_Session_Instance";
+	private static String Session_WebKey="Agile_Session_Instance";
 
 	public static IAgileSession getSession(Properties config) throws APIException {
 

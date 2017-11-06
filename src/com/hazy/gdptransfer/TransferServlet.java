@@ -20,11 +20,16 @@ import net.sf.json.JSONObject;
 
 
 public class TransferServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(TransferServlet.class);
+	private GDPTransferService service=null;
 	public TransferServlet() {
 		super();
 	}
-	GDPTransferService service=null;
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		IAgileSession session=null;

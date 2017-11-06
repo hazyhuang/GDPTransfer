@@ -18,8 +18,7 @@ import com.hazy.gdptransfer.util.AgileSessionHelper;
 import net.sf.json.JSONObject;
 public class GDPTransferServlet extends HttpServlet{
 	 private static Logger logger = Logger.getLogger(GDPTransferServlet.class);
-		
-
+	 private GDPTransferService service=null;
 	/**
 	 * 
 	 */
@@ -29,8 +28,7 @@ public class GDPTransferServlet extends HttpServlet{
 			throws ServletException, IOException {
 		doPost(request,response);
 	}
-	private GDPTransferService service=null;
-	static String Agile_List_WebKey="Agile_List_WebKey";
+	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		IAgileSession session=null;

@@ -9,6 +9,12 @@ import net.sf.json.JSONObject;
 
 
 public class JSONServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public JSONServlet() {
 		super();
 	}

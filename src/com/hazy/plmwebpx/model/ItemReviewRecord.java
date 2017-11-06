@@ -16,39 +16,12 @@ public class ItemReviewRecord {
 	private String username;
 	private String docNumber;
 	private String ecnNumber;
+	
 	public ItemReviewRecord() {
 		
 	}
 
-	public static ItemReviewRecord createItemReviewRecord(JSONObject jObj) {
-		logger.debug("ItemReviewRecord:"+jObj);
-		ItemReviewRecord record=new ItemReviewRecord();
 
-		Object rowidObj=jObj.get("rowid");
-		if(rowidObj!=null&&!"".equals(rowidObj)) {
-		record.setRowid(Integer.valueOf((String)rowidObj));
-		}
-		record.setUserid((String)jObj.get("userid"));
-		record.setSpecReview((String)jObj.get("specReview"));
-		record.setReason((String)jObj.get("reason"));
-		
-
-		Object docidObj=jObj.get("docId");
-		if(docidObj!=null&&!"".equals(docidObj)) {
-		record.setDocId(Integer.valueOf((String)docidObj));
-		}
-		Object ecnIdObj=jObj.get("ecnId");
-		if(ecnIdObj!=null&&!"".equals(ecnIdObj)) {
-		record.setEcnId(Integer.valueOf((String)ecnIdObj));
-		}
-		
-		record.setDocNumber((String)jObj.get("docNumber"));
-		record.setEcnNumber((String)jObj.get("ecnNumber"));
-		record.setUsername((String)jObj.get("username"));
-		record.setSpecReviewValue((String)jObj.get("specReviewValue"));
-		return record;
-	}
-	
 	public String getSpecReviewValue() {
 		return specReviewValue;
 	}
@@ -57,20 +30,7 @@ public class ItemReviewRecord {
 		this.specReviewValue = specReviewValue;
 	}
 
-	public JSONObject toJSON() {
-		JSONObject jObj = new JSONObject();
-		jObj.put("rowid", this.rowid);
-		jObj.put("userid", this.userid);
-		jObj.put("specReview", this.specReview);
-		jObj.put("specReviewValue", this.specReviewValue);
-		jObj.put("reason", this.reason);
-		jObj.put("docId", this.docId);
-		jObj.put("ecnId", this.ecnId);
-		jObj.put("username", this.username);
-		jObj.put("docNumber", this.docNumber);
-		jObj.put("ecnNumber", this.ecnNumber);
-		return jObj;
-	}
+	
 	public Integer getRowid() {
 		return rowid;
 	}
@@ -125,5 +85,49 @@ public class ItemReviewRecord {
 	public void setEcnNumber(String ecnNumber) {
 		this.ecnNumber = ecnNumber;
 	}
+	
+	public JSONObject toJSON() {
+		JSONObject jObj = new JSONObject();
+		jObj.put("rowid", this.rowid);
+		jObj.put("userid", this.userid);
+		jObj.put("specReview", this.specReview);
+		jObj.put("specReviewValue", this.specReviewValue);
+		jObj.put("reason", this.reason);
+		jObj.put("docId", this.docId);
+		jObj.put("ecnId", this.ecnId);
+		jObj.put("username", this.username);
+		jObj.put("docNumber", this.docNumber);
+		jObj.put("ecnNumber", this.ecnNumber);
+		return jObj;
+	}
+	public static ItemReviewRecord createItemReviewRecord(JSONObject jObj) {
+		logger.debug("ItemReviewRecord:"+jObj);
+		ItemReviewRecord record=new ItemReviewRecord();
+
+		Object rowidObj=jObj.get("rowid");
+		if(rowidObj!=null&&!"".equals(rowidObj)) {
+		record.setRowid(Integer.valueOf((String)rowidObj));
+		}
+		record.setUserid((String)jObj.get("userid"));
+		record.setSpecReview((String)jObj.get("specReview"));
+		record.setReason((String)jObj.get("reason"));
+		
+
+		Object docidObj=jObj.get("docId");
+		if(docidObj!=null&&!"".equals(docidObj)) {
+		record.setDocId(Integer.valueOf((String)docidObj));
+		}
+		Object ecnIdObj=jObj.get("ecnId");
+		if(ecnIdObj!=null&&!"".equals(ecnIdObj)) {
+		record.setEcnId(Integer.valueOf((String)ecnIdObj));
+		}
+		
+		record.setDocNumber((String)jObj.get("docNumber"));
+		record.setEcnNumber((String)jObj.get("ecnNumber"));
+		record.setUsername((String)jObj.get("username"));
+		record.setSpecReviewValue((String)jObj.get("specReviewValue"));
+		return record;
+	}
+	
 
 }

@@ -3,8 +3,8 @@ package com.hazy.plmwebpx.model;
 import net.sf.json.JSONObject;
 
 public class ListItem {
-	String APIName;
-	String text;
+	private String APIName;
+	private String text;
 	public String getAPIName() {
 		return APIName;
 	}

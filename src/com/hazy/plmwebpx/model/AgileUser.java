@@ -1,8 +1,8 @@
 package com.hazy.plmwebpx.model;
 
 public class AgileUser {
-	String loginid;
-	String username;
+	private String loginid;
+	private String username;
 	public AgileUser(String userid){
 		this.loginid=userid;
 	}

@@ -10,22 +10,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class ItemRecord {
-	Integer rowid=0;
-	String itemNumber;
-	Integer itemid=0;
-	String description;
-	String rev;
-	String managerReviewRecord;
-	Collection<ItemReviewRecord> itemReviewRecords;
+	private Integer rowid=0;
+	private String itemNumber;
+	private Integer itemid=0;
+	private String description;
+	private String rev;
+	private String managerReviewRecord;
+	private Collection<ItemReviewRecord> itemReviewRecords;
 	
-	
-	public Integer getItemid() {
-		return itemid;
-	}
-
-	public void setItemid(Integer itemid) {
-		this.itemid = itemid;
-	}
 
 	public ItemRecord(String itemNumber ,String description ,String rev, String managerReviewRecord) {
 		this.itemNumber=itemNumber;
@@ -42,9 +34,16 @@ public class ItemRecord {
 	}
 	
 	public ItemRecord() {
-		
-		
 	}
+	
+	public Integer getItemid() {
+		return itemid;
+	}
+
+	public void setItemid(Integer itemid) {
+		this.itemid = itemid;
+	}
+
 	
 	public Integer getRowid() {
 		return rowid;
@@ -61,6 +60,45 @@ public class ItemRecord {
 	public void setReviewRecords(Collection<ItemReviewRecord> itemReviewRecords) {
 		this.itemReviewRecords = itemReviewRecords;
 	}
+
+	public String getItemNumber() {
+		return itemNumber;
+	}
+
+	public void setItemNumber(String itemNumber) {
+		this.itemNumber = itemNumber;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getRev() {
+		return rev;
+	}
+
+	public void setRev(String rev) {
+		this.rev = rev;
+	}
+
+	public String getManagerReviewRecord() {
+		return managerReviewRecord;
+	}
+
+	public void setManagerReviewRecord(String managerReviewRecord) {
+		this.managerReviewRecord = managerReviewRecord;
+	}
+
+
+
+	public void setItemReviewRecords(Collection<ItemReviewRecord> itemReviewRecords) {
+		this.itemReviewRecords = itemReviewRecords;
+	}
+	
 
 	public JSONObject toJSON() {
 		JSONObject jObj=new JSONObject();
@@ -109,66 +147,7 @@ public class ItemRecord {
 		record.setItemReviewRecords(list);
 		return record;
 	}
-	public String getItemNumber() {
-		return itemNumber;
-	}
 
-	public void setItemNumber(String itemNumber) {
-		this.itemNumber = itemNumber;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getRev() {
-		return rev;
-	}
-
-	public void setRev(String rev) {
-		this.rev = rev;
-	}
-
-	public String getManagerReviewRecord() {
-		return managerReviewRecord;
-	}
-
-	public void setManagerReviewRecord(String managerReviewRecord) {
-		this.managerReviewRecord = managerReviewRecord;
-	}
-
-
-
-	public void setItemReviewRecords(Collection<ItemReviewRecord> itemReviewRecords) {
-		this.itemReviewRecords = itemReviewRecords;
-	}
-	
-	
-/*	public void setItemReviewInof(DbConnect db, IRow row, ArrayList<IUser> reviewUserList) throws APIException, SQLException{
-		
-		String userIdList="";
-		for (int i = 0;i<reviewUserList.size();i++){
-			if (i==0){
-				userIdList = "'"+reviewUserList.get(i).getObjectId()+"'";
-			}else{
-				userIdList = userIdList+",'"+reviewUserList.get(i).getObjectId()+"'";
-			}
-		}		
-		ResultSet riRsOut = db.getItemReviewInof(row.getObjectId().toString(),userIdList);
-		//if (riRsOut != null){
-			while (riRsOut.next()) {
-				ItemReviewRecord itemReviewRecord = new ItemReviewRecord(riRsOut.getString(1),riRsOut.getString(2),
-						riRsOut.getString(3),riRsOut.getString(4),riRsOut.getString(5),riRsOut.getString(6),riRsOut.getString(7),
-						riRsOut.getString(8),riRsOut.getString(9),riRsOut.getString(10));
-				array.add(itemReviewRecord.toJSON());
-			}
-		//}
-		riRsOut.close();
-	}*/
 	
 
 }
