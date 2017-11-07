@@ -9,7 +9,6 @@ function savedata() {
 	for (i = 1; i < rowscount; i++) {
 		var tempid = table.rows[i].id;
 		var num = tempid.substr(2);
-		console.log("num:" + num);
 		var ID = 0;
 		var flag = "N";
 		var specReview = "";
@@ -224,20 +223,20 @@ function loadList(datalist) {
 		$("#tr" + count).append(newTd4);
 		
 		var newTd5 = getEnabledSelectJQueryTD("specReview", count,
-				itemReview.specReview, 100);// (newTD,tdID,count,value,width)
+				itemReview.specReviewValue, 100);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd5);
-		registerChange("specReview", count, itemReview.specReview,reviewlist);
+		registerChange("specReview", count, itemReview.specReviewValue,itemReview.specReview,reviewlist);
 		var newTd6 = getEnabledTextAreaTD("reason", count, itemReview.reason,
 				200);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd6);
 		var newTd7 = getEnabledSelectJQueryTD("documentNumber", count,
-				itemReview.docNumber, 150);// (newTD,tdID,count,value,width)
+				itemReview.docId, 150);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd7);
-		registerChange("documentNumber", count, itemReview.docNumber,doclist);
+		registerChange("documentNumber", count, itemReview.docId,itemReview.docNumber,doclist);
 		var newTd8 = getEnabledSelectJQueryTD("ECNNumber", count,
-				itemReview.ecnNumber, 150);// (newTD,tdID,count,value,width)
+				itemReview.ecnId, 150);// (newTD,tdID,count,value,width)
 		$("#tr" + count).append(newTd8);
-		registerChange("ECNNumber", count, itemReview.ecnNumber,ecnlist);
+		registerChange("ECNNumber", count, itemReview.ecnId,itemReview.ecnNumber,ecnlist);
 
 		var newTd9 = getDisabledTextAreaTD("managerReviewRecord", count,
 				datalist[j].managerReviewRecord, 300);// (newTD,tdID,count,value,width)
@@ -285,24 +284,28 @@ function getEnabledTextAreaTD(tdID, count, value, width) {
 
 function getEnabledSelectJQueryTD(tdID, count, value, width) {
 	var newTD = "<td> <input id='" + tdID + count
-			+ "'  class='easyui-combobox' value='" + value + "'"
+			+ "'  class='easyui-combobox' "//value='" + value + "'"
 			+ " data-options=\"width:" + width
-			+ ",valueField:'index',textField:'value'\"></td>";
+			+ ",valueField:'index',textField:'value',value:'" + value + "'\"></td>";
 	return newTD;
 }
 
-function registerChange(inputName, count, value,datalist) {
+function registerChange(inputName, count, value,text,datalist) {
 
+
+	$("#" + inputName + count).combobox({data:datalist});
+
+	//$("#" + inputName + count).combobox('select', value);
+ 	//$("#" + inputName + count).combobox('setValue', value);
+ 	//$("#" + inputName + count).combobox('setText', text);
 	$("#" + inputName + count).combobox({
 		onChange : function(n, o) {
 			alertflag("flag" + count);
 		}
 	});
-	$("#" + inputName + count).combobox({data:datalist});
-	console.log("Value:"+value);
 	
-	$("#" + inputName + count).combobox('setValue', value);
-
+	
+	
 }
 
 function alertflag(flagname) {

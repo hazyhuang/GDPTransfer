@@ -85,7 +85,7 @@ cc5:<input id="cc5" class="easyui-combobox" name="dept"
 
 <br>
 cc4:<input id="cc4" class="easyui-combobox" name="dept"
-   data-options="valueField:'index',textField:'value',data:[{'index':'D012','value':'D012'},{'index':'D012','value':'D012'}]">
+   data-options="valueField:'index',textField:'value',data:[{'index':'D012','value':'D012'},{'index':'D011','value':'D011'}]">
 <h4>表头：</h4>
 
 <table border="1" id="table1">
@@ -122,11 +122,12 @@ cc4:<input id="cc4" class="easyui-combobox" name="dept"
     	
     	width:100}); 
 $('#xx').combobox({ 
-    	
-	  data:doclist}); 
-    
-    
-	
+	  data:doclist,
+	  value:'D002'}); 
+//$('#xx').combobox("select","0002");   
+//$('#cc4').combobox("select","D012"); 
+//$('#xx').combobox("setText","0001");        
+//$('#xx').combobox("select","D002");   	
 </script>
 </body>
 </html>

@@ -81,7 +81,7 @@ public class GDPTransferServiceAgileAPITest {
 			e.printStackTrace();
 		}
 	}
-	@Test
+	//@Test
 	public void testGetManager() throws APIException, SQLException {
 		JSONObject jobj=this.service.getGDPManager("DIC0000002", "yemw");
 		System.out.println(jobj);

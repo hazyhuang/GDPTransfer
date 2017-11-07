@@ -34,7 +34,6 @@ function approve() {
 
 		flag = $('#flag' + num).val();
 		var itemNumber = $('#itemNumber' + num).val();
-		console.log("itemNumber"+num+":"+itemNumber);
 		if (flag == "Y") {
 			ID = $('#ID' + num).val();
 
@@ -83,19 +82,17 @@ function loadData() {
 	
 	var itemRecordList;
 	$.getJSON("GDPTransferServlet?action=loadManager", function(result) {
-		console.log(result);
-		console.log(result.success);
+		
 		if (result.success) {
 			itemRecordList = result.msg.itemRecords;
 			changeNumber = result.msg.changeNumber;
 			changerowid = result.msg.rowid;
-			console.log("changerowid:"+changerowid);
 			userid=result.msg.managerID;
 			loadTitle(itemRecordList);
 			loadList(itemRecordList);
 			$("#msg").html("");
 		} else {
-			console.log("错误信息");
+			
 			$("#msg").html("错误信息:" + result.msg + " <br>请关闭窗口！");
 		}
 	});
