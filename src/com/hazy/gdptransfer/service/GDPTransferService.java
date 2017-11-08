@@ -31,14 +31,14 @@ public class GDPTransferService {
 	private AgileAPIDAO apiDAO = null;
 	private AgileDataBaseDAO dbDAO = new AgileDataBaseDAO();
 	private String listAPIName = "RM_DIC_SpecReview";
-
+    
 	public GDPTransferService(IAgileSession session) {
 		this();
 		this.apiDAO = new AgileAPIDAO(session);
 	}
 
 	public GDPTransferService() {
-		Properties config=null;
+		Properties config = null;
 		try {
 			config = Helper.loadConfig();
 			logger.debug("init Config");
@@ -46,14 +46,23 @@ public class GDPTransferService {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
-        this.listAPIName=config.getProperty("ListAPI");
+		this.listAPIName = config.getProperty("ListAPI");
 	}
+    
+	public AgileDataBaseDAO getDbDAO() {
+		return dbDAO;
+	}
+
 	public AgileUser getUserInfor(String userid) throws SQLException {
 		return this.dbDAO.getUserInfor(userid);
 	}
 
 	public ChangeInfor getChangeInfor(String changeNumber) throws APIException {
 		return this.apiDAO.getChangeInfor(changeNumber);
+	}
+
+	public ChangeInfor getChangeInfor(String changeNumber, String statusAPIName) throws APIException {
+		return this.apiDAO.getChangeInfor(changeNumber, statusAPIName);
 	}
 
 	public boolean containsUser(ChangeInfor chg, String userid) {
@@ -90,7 +99,6 @@ public class GDPTransferService {
 		return array;
 	}
 
-
 	public JSONArray getSpecReivewList() throws APIException {
 		JSONArray array = new JSONArray();
 		Collection<ListItem> list = apiDAO.getAgileList(listAPIName);
@@ -123,9 +131,9 @@ public class GDPTransferService {
 
 		String chgNumber = changeRecord.getChangeNumber();
 		Collection<ItemRecord> list = changeRecord.getItemRecords();
-		
+
 		for (ItemRecord itemRecord : list) {
-			fillAgileObjectID(itemRecord);
+			//fillAgileObjectID(itemRecord);
 			Integer rowid = getItemReviewRecordID(itemRecord);
 			if (rowid == 0) {
 				dbDAO.createItemRecord(chgNumber, itemRecord);
@@ -137,29 +145,29 @@ public class GDPTransferService {
 	}
 
 	private void fillAgileObjectID(ItemRecord itemRecord) throws SQLException {
-Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
-		
+		Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
+
 		ItemReviewRecord itemReviewRecord = null;
 		for (ItemReviewRecord record : ItemReviewRecords) {
 			itemReviewRecord = record;
 		}
 		if (itemReviewRecord != null) {
-			String ecnNum=itemReviewRecord.getEcnNumber();
-			if(ecnNum!=null) {
-			Integer ecnid=getECNID(ecnNum);
-			itemReviewRecord.setEcnId(ecnid);
+			String ecnNum = itemReviewRecord.getEcnNumber();
+			if (ecnNum != null) {
+				Integer ecnid = getECNID(ecnNum);
+				itemReviewRecord.setEcnId(ecnid);
 			}
-			String docNum=itemReviewRecord.getDocNumber();
-			if(docNum!=null) {
-			Integer docid=getDocID(docNum);
-			itemReviewRecord.setDocId(docid);
+			String docNum = itemReviewRecord.getDocNumber();
+			if (docNum != null) {
+				Integer docid = getDocID(docNum);
+				itemReviewRecord.setDocId(docid);
 			}
 		}
 	}
 
 	private Integer getDocID(String docNum) throws SQLException {
 		return this.dbDAO.getDocID(docNum);
-	
+
 	}
 
 	private Integer getECNID(String ecnNum) throws SQLException {
@@ -169,7 +177,7 @@ Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords
 
 	private Integer getItemReviewRecordID(ItemRecord itemRecord) {
 		Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
-		
+
 		ItemReviewRecord itemReviewRecord = null;
 		for (ItemReviewRecord record : ItemReviewRecords) {
 			itemReviewRecord = record;
@@ -182,7 +190,7 @@ Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords
 
 	public JSONObject getGDPManager(String changeNumber, String userid) throws APIException, SQLException {
 		Collection<ItemRecord> itemRecords = this.apiDAO.loadAffectItem(changeNumber);
-		Collection<AgileUser> users = this.apiDAO.getFunctionUsers(changeNumber,userid);
+		Collection<AgileUser> users = this.apiDAO.getFunctionUsers(changeNumber, userid);
 		for (ItemRecord itemRecord : itemRecords) {
 			String itemNumber = itemRecord.getItemNumber();
 			Collection<ItemReviewRecord> list = this.dbDAO.getGDPManager(changeNumber, itemNumber, users);
@@ -191,8 +199,10 @@ Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords
 		}
 		ChangeRecord changeRecord = new ChangeRecord(changeNumber);
 		this.dbDAO.loadChangeRecord(changeRecord, changeNumber, userid);
+		
 		changeRecord.setManagerID(userid);
-      
+        AgileUser agileUser=this.dbDAO.getUserInfor(userid);
+        changeRecord.setUsername(agileUser.getUsername());
 		changeRecord.setItemRecords(itemRecords);
 		return changeRecord.toJSON();
 

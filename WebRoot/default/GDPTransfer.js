@@ -39,23 +39,34 @@ function savedata() {
 				}
 			} else if (specReview != "0") {
 				documentNumber = $('#documentNumber' + num).val();
-				if(!checkNumber(documentNumber,doclist)){
-					alert("第" + (row + 1) + "行,DocumentNumber 在系统中找不到!");
-					reload = false;
-					return;
+				if(specReview =="2" ||specReview =="3"){
+					if (documentNumber == "") {
+						alert("第" + (row + 1) + "行,DocumentNumber 不能为空!");
+						reload = false;
+						return;
+					}
 				}
-				if (documentNumber == "") {
-					alert("第" + (row + 1) + "行,DocumentNumber 不能为空!");
-					reload = false;
-					return;
+				if(documentNumber!=""){
+					var failNums=validMutilist(documentNumber,doclist);
+				      if(failNums.length>0){
+				    	  alert("第" + (row + 1) + "行,DocumentNumber"+failNums.toString()+" 在系统中找不到!");
+							reload = false;
+							return;
+					      
+				      }
+				
 				}
+				
 				ECNNumber = $('#ECNNumber' + num).val();
 				if(ECNNumber!=""){
-				if(!checkNumber(documentNumber,doclist)){
-					alert("第" + (row + 1) + "行,ECN 在系统中找不到!");
-					reload = false;
-					return;
-				}
+					
+					var failNums=validMutilist(ECNNumber,ecnlist);
+				      if(failNums.length>0){
+				    	  alert("第" + (row + 1) + "行,ECNNumber"+failNums.toString()+" 在系统中找不到!");
+							reload = false;
+							return;
+					      
+				      }
 				}
 			}
 			var itemjson = {
@@ -71,9 +82,8 @@ function savedata() {
 					"specReviewValue" : specReviewValue,
 					"reason" : reason,
 					"docNumber" : documentNumber,
-					"docId" : docid,
-					"ecnNumber" : ECNNumber,
-					"ecnId" : ecnid
+					"ecnNumber" : ECNNumber
+			
 				} ]
 			};
 			changeJSON.itemRecords.push(itemjson);
@@ -106,14 +116,7 @@ function savedata() {
 		// window.location.replace(thisurl);
 	}
 }
-function checkNumber(Number,datalist){
-	for (var i = 0; i < datalist.length; i++) {
-		if (datalist[i].value == Number) {
-			return true;
-		}
-	}
-	return false;
-}
+
 function getInitChangeJson() {
 	var initChangeJson = {
 		"changeNumber" : chgnum,

@@ -6,7 +6,9 @@ pageEncoding="UTF-8"%>
 
 <script type="text/javascript" src="../jquery-easyui-1.4.4/jquery.min.js"></script>
 <script type="text/javascript" src="singlelist.js"></script>
-
+<script type="text/javascript" src="table.js"></script>
+<script type="text/javascript" src="GDPTransfer.js"></script>
+<script type="text/javascript" src="validmutilist.js"></script>
 <style type="text/css">
 input {
 	border: 1px solid #000;
@@ -29,8 +31,7 @@ input {
 </style>
 <%@include file="StylesInclude.jsp"%>
 <title>GDP转化责任人确认</title>
-<script type="text/javascript" src="table.js"></script>
-<script type="text/javascript" src="GDPTransfer.js"></script>
+
 
 <script type="text/javascript">
     var userid='<%=request.getParameter("agile.userName")%>'//userid

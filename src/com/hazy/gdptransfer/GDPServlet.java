@@ -46,11 +46,13 @@ public class GDPServlet extends HttpServlet {
 		boolean hasPrivilege = false;
 		String review="";
 		String approve="";
+		String finalApprove="";
 		String agileurl="";
 		try {
 			Properties config=Helper.loadConfig();
 			review=config.getProperty("reviewNodeAPI");
 			approve=config.getProperty("approveNodeAPI");
+			finalApprove=config.getProperty("finalApproveNodeAPI");//finalApproveNodeAPI
 			agileurl=config.getProperty("agileurl");
 			session = AgileSessionHelper.getCurrentSession(request);
 			this.service = new GDPTransferService(session);
@@ -88,9 +90,15 @@ public class GDPServlet extends HttpServlet {
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
 			logger.debug("forward:" + path);
 			requestDispatcher.forward(request, response);
-		} else {
+		}  else if (finalApprove.equals(chgInfor.getStatus())){
+			request.setAttribute("agileurl", agileurl);
+			String path = "default/GDPSummary.jsp";
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
+			logger.debug("forward:" + path);
+			requestDispatcher.forward(request, response);
+		}else {
 			String path = "default/error.jsp";
-			request.setAttribute("error", "无权限");
+			request.setAttribute("error", "不在有效的流程状态中");
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
 			logger.debug("forward Error:" + path);
 			requestDispatcher.forward(request, response);

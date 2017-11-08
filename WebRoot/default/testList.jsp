@@ -15,6 +15,8 @@
 <script type="text/javascript" src="../jquery-easyui-1.4.4/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="../jquery-easyui-1.4.4/datagrid-groupview.js"></script>
 <script type="text/javascript" src="../jquery-easyui-1.4.4/datagrid-cellediting.js"></script>
+<script type="text/javascript" src="validmutilist.js"></script>
+
 <style type="text/css">
 input {
 	border: 1px solid #000;
@@ -90,6 +92,7 @@ cc4:<input id="cc4" class="easyui-combobox" name="dept"
 
 <table border="1" id="table1">
 <tr id='tr1'></tr>
+<tr id='tr2'></tr>
 </table>
 <button id=savebtn class=button onClick='javascript:savedata();'>
 						<SPAN id=generatespan>提交&nbsp;</SPAN>
@@ -97,11 +100,19 @@ cc4:<input id="cc4" class="easyui-combobox" name="dept"
 <script type="text/javascript">
    
     $("#tr1").append("<td>"+getInnerTD()+"</td>");
+    $("#tr2").append("<td>"+getLinkTD()+"</td>");
     function getInnerTD(){
  	   
 		var inner = "XX: <input id='xx' class='easyui-combobox' "
 		    +" data-options=\"width:130"
 		    +",valueField:'index',textField:'value'\">";
+	    return inner;
+	 
+	}
+    var agileurl="http://agileurl";
+    function getLinkTD(){
+  	  var  strs="D003:8908;D002:9080";
+		var inner = showMutiList(strs,"9000");
 	    return inner;
 	 
 	}
@@ -124,6 +135,45 @@ cc4:<input id="cc4" class="easyui-combobox" name="dept"
 $('#xx').combobox({ 
 	  data:doclist,
 	  value:'D002'}); 
+	  
+	  var  ecns="D003;D002";
+
+	  
+	 
+	  
+	  var failNums=validMutilist(ecns,doclist);
+      if(failNums.length>0){
+    	  
+	      console.log(failNums.toString());
+      }
+      function validMutilist(strs, datalist) {
+    		var selectedList = strs.split(';');
+    		var failNumbers = new Array();
+
+    		for (var i = 0; i < selectedList.length; i++) {
+
+    			var chk = validNumber(selectedList[i], datalist);
+    			if (!chk) {
+    				failNumbers.push(selectedList[i]);
+    			}
+    		}
+    		return failNumbers;
+    	}
+    	function validNumber(Number, datalist) {
+    		for (var i = 0; i < datalist.length; i++) {
+    			if (datalist[i].value == Number) {
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+      function getEnabledLinkTD(newTD,tdID,count,value,subclassid,objectid,width){
+    	    newTD.id = tdID;
+    	    newTD.setAttribute("class", "GMColorNoFocus GMRow GMText GMCell");
+    	    newTD.setAttribute("className","GMColorNoFocus GMRow GMText GMCell");
+    	    newTD.innerHTML = " <A href='"+agileurl+"/PLMServlet?action=OpenEmailObject&classid="+subclassid+"&objid="+objectid+"'>"+ value + "</A> ";
+    	}
+
 //$('#xx').combobox("select","0002");   
 //$('#cc4').combobox("select","D012"); 
 //$('#xx').combobox("setText","0001");        

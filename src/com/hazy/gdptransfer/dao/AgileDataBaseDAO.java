@@ -277,7 +277,8 @@ public class AgileDataBaseDAO {
 		Collection<ItemReviewRecord> itemReviewRecords=new ArrayList<ItemReviewRecord>();
 		for(AgileUser user:users) {
 			ItemReviewRecord itemReviewRecord=this.getGDPTransfer(changeNumber, itemNumber, user.getLoginid());
-	        if(itemReviewRecord.getRowid()==0) {
+	        fillObjectID(itemReviewRecord);
+			if(itemReviewRecord.getRowid()==0) {
 	        	AgileUser aUser=this.getUserInfor(user.getLoginid());
 	        	itemReviewRecord.setUsername(aUser.getUsername());
 	        }
@@ -286,6 +287,40 @@ public class AgileDataBaseDAO {
 		return itemReviewRecords;
 	}
 
+	private void fillObjectID(ItemReviewRecord itemReviewRecord) throws SQLException {
+		String docNum=itemReviewRecord.getDocNumber();
+		itemReviewRecord.setDocNumber(this.transferNumber(docNum));
+		String ecnNum=itemReviewRecord.getEcnNumber();
+		itemReviewRecord.setEcnNumber(this.transferECNNumber(ecnNum));
+	}
+	public String transferECNNumber(String docNum) throws SQLException {
+		StringBuffer strBuffer=new StringBuffer();
+		if(docNum!=null&docNum!="") {
+			String numbers[]=docNum.split(";");
+			for(String num:numbers) {
+				Integer objectID=this.getECNID(num);
+				strBuffer.append(num+":"+objectID+";");
+			}
+			if(numbers.length>0) {
+				strBuffer.deleteCharAt(strBuffer.length()-1);
+			}
+		}
+		return strBuffer.toString();
+	}	
+	public String transferNumber(String docNum) throws SQLException {
+		StringBuffer strBuffer=new StringBuffer();
+		if(docNum!=null&docNum!="") {
+			String numbers[]=docNum.split(";");
+			for(String num:numbers) {
+				Integer objectID=this.getDocID(num);
+				strBuffer.append(num+":"+objectID+";");
+			}
+			if(numbers.length>0) {
+				strBuffer.deleteCharAt(strBuffer.length()-1);
+			}
+		}
+		return strBuffer.toString();
+	}
 	public void loadItemRecord(ItemRecord itemRecord, String changeNumber, String userid) throws SQLException {
 		String itemNumber = itemRecord.getItemNumber();
 		String sql = "select * from GDP_ManagerReview where changenumber = '"

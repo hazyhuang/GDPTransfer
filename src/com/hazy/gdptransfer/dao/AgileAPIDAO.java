@@ -75,6 +75,36 @@ public class AgileAPIDAO {
 		chgInfor.setReviewers(users);
 		return chgInfor;
 	}
+	
+	public ChangeInfor getChangeInfor(String changeNumber,String statusAPIName) throws APIException{
+		ChangeInfor chgInfor=new ChangeInfor(changeNumber);
+		IChange change=HazyUtil.getAgileAPIHelper().loadChange(session, changeNumber);
+		IStatus[] statuses=change.getWorkflow().getStates();
+		IStatus approveStatus=null;;
+		for(IStatus status:statuses) {
+			if(status.getAPIName().equals(statusAPIName)) {
+				approveStatus=status;
+			}
+		}
+		chgInfor.setStatus(statusAPIName);
+		ISignoffReviewer[] acknowledgers=change.getAllReviewers(approveStatus, WorkflowConstants.USER_ACKNOWLEDGER );
+		ISignoffReviewer[] approvers=change.getAllReviewers(approveStatus, WorkflowConstants.USER_APPROVER );
+		
+		Collection<AgileUser> users=new ArrayList<AgileUser>();
+		for(ISignoffReviewer approver:approvers) {
+			String userid=approver.getReviewer().getName();
+			AgileUser user=new AgileUser(userid);
+			users.add(user);
+		}
+		for(ISignoffReviewer acknowledger:acknowledgers) {
+			String userid=acknowledger.getReviewer().getName();
+			AgileUser user=new AgileUser(userid);
+			users.add(user);
+		}
+		chgInfor.setReviewers(users);
+		return chgInfor;
+	}
+	
 	public Collection<ItemRecord> loadAffectItem(String changeNumber) throws APIException{
 		IChange change=HazyUtil.getAgileAPIHelper().loadChange(session, changeNumber);
 		ITable table=change.getTable(ChangeConstants.TABLE_AFFECTEDITEMS);

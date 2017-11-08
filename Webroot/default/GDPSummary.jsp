@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 <html>
 <head>
-<title>GDP转化人部门经理审核</title>
+<title>GDP转换汇总</title>
 <style type="text/css">
 input {
 	border: 1px solid #000;
@@ -27,10 +27,10 @@ input {
 	src="../jquery-easyui-1.4.4/jquery.min.js"></script>
 
 <script type="text/javascript" src="table.js"></script>
-<script type="text/javascript" src="GDPManager.js"></script>
+<script type="text/javascript" src="GDPSummary.js"></script>
 <script type="text/javascript" src="validmutilist.js"></script>
 <script type="text/javascript">
-    var thisurl=  "<%=request.getContextPath()%>/default/GDPManager.jsp";      
+    var thisurl=  "<%=request.getContextPath()%>/default/GDPSummary.jsp";      
     var agileurl="<%=request.getAttribute("agileurl")%>";
   
 </script>
@@ -44,47 +44,23 @@ input {
 			<td height="35px" colspan=2></td>
 		</tr>
 		<tr>
-			<td colspan=2>
+			<td  colspan=2>
 			<div id="msg" style="color:#F00">请不要关闭窗口,正在加载数据...</div>
-			<div style="overflow-x:scroll;width:1300px;white-space:nowrap;">
-				<table>
-					<tr>
-						<td>
-							<table id="recordlistTitle" class=GMSection>
-							</table>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<table id="recordlist" class=GMSection>
-							</table>
-						</td>
-					</tr>
-				</table>
+			<div id="alltable" style="overflow-x:scroll;width:1300px;white-space:nowrap;">
+				
 			</div>
 			</td>
 		</tr>
 			<tr>
 			<td align="left" valign="middle"
 				style="BACKGROUND-COLOR: rgb(239, 239, 239)">
-				<div id="savecancel">
-					&nbsp;&nbsp;
-					<button id=rejectbtn class=button
-						onClick='javascript:reject();'>
-						<SPAN id=generatespan>拒绝&nbsp;</SPAN>
-					</button>
-					&nbsp;&nbsp;
-					<button id=approvebtn class=button onClick='javascript:approve();'>
-						<SPAN id=generatespan>批准&nbsp;</SPAN>
-					</button>
-					
-				</div>
+			
 			</td>
 			<td style='BACKGROUND-COLOR: rgb(239, 239, 239)'></td>
 		</tr>
 	</table>
 </body>
 <script type="text/javascript">
-	loadData();
+	loadSummary();
 </script>
 </html>

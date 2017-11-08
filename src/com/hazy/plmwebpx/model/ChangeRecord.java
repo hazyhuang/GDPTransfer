@@ -13,6 +13,7 @@ public class ChangeRecord {
 	private Integer rowid=0;
 	private String changeNumber;
 	private String managerID;
+	private String username;
 	private String managerApprove;
 	private String comment;
 	private Collection<ItemRecord> itemRecords;
@@ -29,6 +30,12 @@ public ChangeRecord(String chgNum) {
 		this.managerApprove= managerApprove;
 	}
 	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	public void setItemRecords(Collection<ItemRecord> itemRecords){
 		this.itemRecords=itemRecords;
 	}
@@ -72,6 +79,7 @@ public ChangeRecord(String chgNum) {
 			jObj.put("rowid", this.rowid);
 			jObj.put("changeNumber", this.changeNumber);
 			jObj.put("managerID", this.managerID);
+			jObj.put("username", this.username);
 			jObj.put("managerApprove", this.managerApprove);
 			JSONArray array=new JSONArray();
 			

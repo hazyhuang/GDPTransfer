@@ -1,106 +1,55 @@
-var action = "approve";
-var changeNumber;
-var userid;
-var changerowid;
-function reject() {
-	action = "reject";
-	approve();
-}
-
-function approve() {
-	url = "<%=request.getContextPath()%>/default/GDPTransfer.jsp";
-	var reload = true;
-	var table = document.getElementById("recordlist");
-	var rowscount = table.rows.length;
-	var count = 0;
-	var changeJSON = {
-		"rowid": changerowid,
-		"changeNumber" : changeNumber,
-		"managerID" : userid,
-		"managerApprove" : action,
-		"itemRecords" : []
-		//"managerReviewRecord" : $("#comment").val()
-	};
-	for (i = 1; i < rowscount; i++) {
-		var tempid = table.rows[i].id;
-		var num = tempid.substr(2);
-		var ID = 0;
-		var flag = "N";
-
-		var specReview = "";
-		var reason = "";
-		var documentNumber = "";
-		var row = i - 1;
-
-		flag = $('#flag' + num).val();
-		var itemNumber = $('#itemNumber' + num).val();
-		if (flag == "Y") {
-			ID = $('#ID' + num).val();
-
-			if ($('#managerReviewRecord' + num).val() != '')
-				managerReviewRecord = $('#managerReviewRecord' + num).val();
-			else {
-				alert("第" + (row + 1) + "行,managerReviewRecord不能为空!");
-				reload = false;
-				return;
-			}
-
-			var itemjson = {
-				"rowid":ID,
-				"itemNumber" : itemNumber,
-				"description" : "",
-				"rev" : "",
-				"managerReviewRecord" : managerReviewRecord,
-				"itemReviewRecords" : []
-			};
-			changeJSON.itemRecords.push(itemjson);
-			reload = true;
-		}
-	}
+var managers;	
+function loadSummary() {
 
 	$.ajax({
-		type : "POST",
-		url : "ManagerServlet",
-		contentType : "application/json; charset=utf-8",
-		data : JSON.stringify(changeJSON),
-		success : function(xhr, exception) {
-			// alert("success错误提示： " + xhr.status + " "
-			// + xhr.statusText+" "+exception);
-			alert("已提交！请关闭窗口");
-		},
-		error : function(xhr, textStatus, errorThrown) {
-			$("#msg").html("提交数据失败！");
+		url : 'GDPTransferServlet?action=loadUsers',
+		dataType : 'json',
+		async : false,
+		success : function(result) {
+			if (result.success) {
+				managers = result.msg;
+			} else {
+				$("#msg").html("错误信息:" + result.msg + " <br>请关闭窗口！");
+			}
 		}
 	});
-	if (reload) {
-		//alert("更新成功!");
-		// window.location.replace(thisurl);
-	}
-}
-
-function loadData() {
 	
+	for(var i=0;i<managers.length;i++){
+		var managerTable=
+			"<table><tr><td><table id='recordlistTitle"+i+"' class=GMSection></table></td></tr>"
+		+"<tr><td><table id='recordlist"+i+"' class=GMSection></table></td></tr></table>";
+		
+		$("#alltable").append(managerTable);
+		console.log(managerTable);
+		
+	}
+	for(var i=0;i<managers.length;i++){
+		loadManager(managers[i].loginid,i);
+	}
+	$("#msg").html("");
+
+}
+function loadManager(manager,mgrcount){
 	var itemRecordList;
-	$.getJSON("GDPTransferServlet?action=loadManager", function(result) {
+	$.ajaxSettings.async = false; 
+	$.getJSON("GDPTransferServlet?action=loadManagerByUserid&Manager="+manager, function(result) {
 		
 		if (result.success) {
 			itemRecordList = result.msg.itemRecords;
-			changeNumber = result.msg.changeNumber;
-			changerowid = result.msg.rowid;
-			userid=result.msg.managerID;
-			loadTitle(itemRecordList);
-			loadList(itemRecordList);
-			$("#msg").html("");
+			//var managerID=result.msg.managerID;
+			var managerUserName=result.msg.username;
+			
+			loadTitle(managerUserName,itemRecordList,mgrcount);
+			loadList(itemRecordList,mgrcount);
+			
 		} else {
 			
 			$("#msg").html("错误信息:" + result.msg + " <br>请关闭窗口！");
 		}
 	});
-
 }
 
-
-function loadTitle(recordList) {
+function loadTitle(managerID,recordList,mgrcount) {
 	var dynmicTH;
 	var dynmicTitle;
 	var itemReviewRecords = recordList[0].itemReviewRecords;
@@ -121,22 +70,23 @@ function loadTitle(recordList) {
 	var tbTitle = "<tr class=GMHeaderRow style='OVERFLOW: auto;'>"
 			+ createTD("") + createTD("") + createTD("附件编号 ")
 			+ createTD("附件名称 ") + createTD("附件版本 ") + dynmicTitle
-			+ createTD("部门经理评审意见 ") + "</tr>";
-	$("#recordlistTitle").append(tbWidth);
-	$("#recordlistTitle").append(tbTitle);
-	$("#recordlist").append(tbWidth);
+			+ createTD(managerID+"<br>部门经理评审意见 ") + "</tr>";
+	$("#recordlistTitle"+mgrcount).append(tbWidth);
+	$("#recordlistTitle"+mgrcount).append(tbTitle);
+	$("#recordlist"+mgrcount).append(tbWidth);
 
 }
 
-function loadList(recordList) {
+function loadList(recordList,mgrcount) {
+	var count=0;
 	for (var j = 0; j < recordList.length; j++) {
 
-		var table = document.getElementById("recordlist");
+		var table = document.getElementById("recordlist"+mgrcount);
+		console.log("recordlist"+mgrcount+":"+table);
 		var rowscount = table.rows.length;
 		var newTr = table.insertRow(rowscount);
-
-		var count = Math.ceil(document.getElementById('recordcount').value);
-		var newTrID = "tr" + count;
+        
+		var newTrID = "tr"+mgrcount + count;
 		newTr.id = newTrID;
 		newTr.setAttribute("class", "GMDataRow"); // class
 		newTr.setAttribute("className", "GMDataRow"); // class

@@ -2,6 +2,8 @@ package com.hazy.gdptransfer;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import com.agile.api.IAgileSession;
 import com.hazy.common.HazyException;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
+import com.hazy.gdptransfer.util.Helper;
 
 import net.sf.json.JSONObject;
 public class GDPTransferServlet extends HttpServlet{
@@ -34,6 +37,7 @@ public class GDPTransferServlet extends HttpServlet{
 		IAgileSession session=null;
 		try {
 			session = AgileSessionHelper.getCurrentSession(request);
+			logger.debug("agile session status:"+session.isOpen());
 		} catch (APIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,7 +47,7 @@ public class GDPTransferServlet extends HttpServlet{
 		}
 		this.service=new GDPTransferService(session);
 		JSONObject retJSON =new JSONObject();
-		
+		String approveAPIName="";
 		String action="";
 		if (request.getParameter("action") != null) {
 			action = request.getParameter("action");
@@ -51,17 +55,29 @@ public class GDPTransferServlet extends HttpServlet{
 		try {
 			String changeNumber=(String)request.getSession().getAttribute("agile.1047");
 			String userid=(String)request.getSession().getAttribute("agile.userName");
-			
+			Properties config=Helper.loadConfig();
+			approveAPIName=config.getProperty("approveNodeAPI");
 		if("loadReview".equals(action)) {
 			retJSON.put("success", true);
-			retJSON.put("msg", service.getGDPTransfer(changeNumber, userid));
+			retJSON.put("msg", this.service.getGDPTransfer(changeNumber, userid));
 		}else if("loadManager".equals(action)){
 			retJSON.put("success", true);
-			retJSON.put("msg", service.getGDPManager(changeNumber, userid));
+			retJSON.put("msg", this.service.getGDPManager(changeNumber, userid));
+		}else if("loadUsers".equals(action)) {
+			retJSON.put("success", true);
+			retJSON.put("msg", this.service.getChangeInfor(changeNumber, approveAPIName).toJSONReviewers());
+		}else if("loadManagerByUserid".equals(action)){
+			retJSON.put("success", true);
+			String manager=(String)request.getParameter("Manager");
+			logger.debug("Manager:"+manager);
+			retJSON.put("msg", this.service.getGDPManager(changeNumber, manager));
 		}
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		} catch (APIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (HazyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
