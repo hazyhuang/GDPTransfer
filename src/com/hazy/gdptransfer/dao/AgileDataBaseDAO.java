@@ -49,7 +49,49 @@ public class AgileDataBaseDAO {
 
 		return obj;
 	}
+	public Integer getECNID(String number) throws SQLException {
+		Statement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+	
+		try {
+			conn = Helper.getConnection();
+			stmt = conn.createStatement();
+			String sql = "select * from change where subclass =2473057 and change_Number='"+number+"'";
+			logger.debug(sql);
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				  return rs.getInt("ID");
+				  
+			}
+		} finally {
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
+		}
 
+		return 0;
+	}
+
+	public Integer getDocID(String number) throws SQLException {
+		Statement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+	
+		try {
+			conn = Helper.getConnection();
+			stmt = conn.createStatement();
+			String sql = "select * from item where class =9000 and item_number='"+number+"'";
+			logger.debug(sql);
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				  return rs.getInt("ID");
+				  
+			}
+		} finally {
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
+		}
+
+		return 0;
+	}
 	
 	public Collection<ECN> loadECN() throws SQLException {
 		Statement stmt = null;

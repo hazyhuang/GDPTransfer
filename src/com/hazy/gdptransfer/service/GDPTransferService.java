@@ -123,7 +123,9 @@ public class GDPTransferService {
 
 		String chgNumber = changeRecord.getChangeNumber();
 		Collection<ItemRecord> list = changeRecord.getItemRecords();
+		
 		for (ItemRecord itemRecord : list) {
+			fillAgileObjectID(itemRecord);
 			Integer rowid = getItemReviewRecordID(itemRecord);
 			if (rowid == 0) {
 				dbDAO.createItemRecord(chgNumber, itemRecord);
@@ -134,8 +136,40 @@ public class GDPTransferService {
 		return changeRecord.toJSON();
 	}
 
+	private void fillAgileObjectID(ItemRecord itemRecord) throws SQLException {
+Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
+		
+		ItemReviewRecord itemReviewRecord = null;
+		for (ItemReviewRecord record : ItemReviewRecords) {
+			itemReviewRecord = record;
+		}
+		if (itemReviewRecord != null) {
+			String ecnNum=itemReviewRecord.getEcnNumber();
+			if(ecnNum!=null) {
+			Integer ecnid=getECNID(ecnNum);
+			itemReviewRecord.setEcnId(ecnid);
+			}
+			String docNum=itemReviewRecord.getDocNumber();
+			if(docNum!=null) {
+			Integer docid=getDocID(docNum);
+			itemReviewRecord.setDocId(docid);
+			}
+		}
+	}
+
+	private Integer getDocID(String docNum) throws SQLException {
+		return this.dbDAO.getDocID(docNum);
+	
+	}
+
+	private Integer getECNID(String ecnNum) throws SQLException {
+		// TODO Auto-generated method stub
+		return this.dbDAO.getECNID(ecnNum);
+	}
+
 	private Integer getItemReviewRecordID(ItemRecord itemRecord) {
 		Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
+		
 		ItemReviewRecord itemReviewRecord = null;
 		for (ItemReviewRecord record : ItemReviewRecords) {
 			itemReviewRecord = record;

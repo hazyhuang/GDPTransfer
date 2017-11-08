@@ -3,16 +3,10 @@ pageEncoding="UTF-8"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="../jquery-easyui-1.4.4/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="../jquery-easyui-1.4.4/themes/icon.css">
-<link rel="stylesheet" type="text/css" href="../jquery-easyui-1.4.4/themes/color.css">
-<link rel="stylesheet" type="text/css" href="../css/style.css">
 
 <script type="text/javascript" src="../jquery-easyui-1.4.4/jquery.min.js"></script>
-<script type="text/javascript" src="../jquery-easyui-1.4.4/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="../jquery-easyui-1.4.4/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="../jquery-easyui-1.4.4/datagrid-groupview.js"></script>
-<script type="text/javascript" src="../jquery-easyui-1.4.4/datagrid-cellediting.js"></script>
+<script type="text/javascript" src="singlelist.js"></script>
+
 <style type="text/css">
 input {
 	border: 1px solid #000;
