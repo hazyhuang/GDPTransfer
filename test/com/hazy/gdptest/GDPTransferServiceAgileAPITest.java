@@ -86,7 +86,7 @@ public class GDPTransferServiceAgileAPITest {
 		JSONObject jobj=this.service.getGDPManager("DIC0000002", "yemw");
 		System.out.println(jobj);
 	}
-	@Test
+	//@Test
 		public void testGetChangeInforReview() throws SQLException, APIException{
 			ChangeInfor infor=service.getChangeInfor("DIC0000002","Review2");
 			System.out.println(infor.getStatus());

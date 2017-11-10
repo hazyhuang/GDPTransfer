@@ -1,3 +1,18 @@
+/*
+ * Copyright 2012 - 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hazy.gdptransfer.dao;
 
 import java.util.ArrayList;
@@ -19,6 +34,7 @@ import com.agile.api.IStatus;
 import com.agile.api.ITable;
 import com.agile.api.IUser;
 import com.agile.api.IUserGroup;
+import com.agile.api.UserConstants;
 import com.agile.api.UserGroupConstants;
 import com.agile.api.WorkflowConstants;
 import com.hazy.common.HazyUtil;
@@ -26,7 +42,10 @@ import com.hazy.plmwebpx.model.AgileUser;
 import com.hazy.plmwebpx.model.ChangeInfor;
 import com.hazy.plmwebpx.model.ItemRecord;
 import com.hazy.plmwebpx.model.ListItem;
-
+/**
+ * 
+ * @author Hua.Huang
+ */
 public class AgileAPIDAO {
 	private static Logger logger = Logger.getLogger(AgileAPIDAO.class);
 
@@ -130,7 +149,8 @@ public class AgileAPIDAO {
 		ArrayList<IUser> iusers=this.getReviewUserList(change, manager);
 		for(IUser user:iusers) {
 			
-			AgileUser aUser=new AgileUser(user.getName());
+			AgileUser aUser=new AgileUser((String)user.getValue(UserConstants.ATT_GENERAL_INFO_USER_ID));
+			logger.debug("transferman:"+aUser.getLoginid());
 			users.add(aUser);
 		}
 		return users;
@@ -151,12 +171,12 @@ public class AgileAPIDAO {
 				ICell rowCell = tempRow.getCell(new Integer(2000017205));	
 				IAgileList rowvalue = (IAgileList)rowCell.getValue();
 				IAgileList[] rowselected = rowvalue.getSelection();
-				if (rowselected[0].getAPIName().toUpperCase().equals("USER")){
+				if (rowselected[0].getAPIName().toUpperCase().equals("01")){
 					rowCell = tempRow.getCell(new Integer(2000017207));
 					rowvalue = (IAgileList)rowCell.getValue();					
 					reviewList = rowvalue.getSelection();
 				}
-				if (rowselected[0].getAPIName().toUpperCase().equals("MANGER")){
+				if (rowselected[0].getAPIName().toUpperCase().equals("02")){
 					rowCell = tempRow.getCell(new Integer(2000017207));
 					rowvalue = (IAgileList)rowCell.getValue();	
 					managerList = rowvalue.getSelection();

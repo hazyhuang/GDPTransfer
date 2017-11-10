@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 - 2013 the original author or authors.
+ * Copyright 2012 - 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package com.hazy.gdptransfer;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
@@ -33,15 +32,14 @@ import com.hazy.common.HazyException;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
-import com.hazy.plmwebpx.model.ChangeInfor;
+
 
 /**
  * 
  * @author Hua.Huang
  */
-public class GDPServlet extends HttpServlet {
-	private static Logger logger = Logger.getLogger(GDPServlet.class);
+public class GDPSummaryServlet extends HttpServlet {
+	private static Logger logger = Logger.getLogger(GDPSummaryServlet.class);
 	/**
 	 * 
 	 */
@@ -61,24 +59,21 @@ public class GDPServlet extends HttpServlet {
 		request.getSession().setAttribute("agile.userName", userid);
 		request.getSession().setAttribute("agile.1047", changeNumber);
 		IAgileSession session = null;
-		ChangeInfor chgInfor = null;
-		boolean hasPrivilege = false;
-		String review="";
-		String approve="";
-		String finalApprove="";
+		//ChangeInfor chgInfor = null;
+		//boolean hasPrivilege = false;
+		//String review="";
+		//String approve="";
+	
 		String agileurl="";
 		try {
 			Properties config=Helper.loadConfig();
-			review=config.getProperty("reviewNodeAPI");
-			approve=config.getProperty("approveNodeAPI");
-			finalApprove=config.getProperty("finalApproveNodeAPI");//finalApproveNodeAPI
 			agileurl=config.getProperty("agileurl");
 			session = AgileSessionHelper.getCurrentSession(request);
 			this.service = new GDPTransferService(session);
-			chgInfor = this.service.getChangeInfor(changeNumber);
-			AgileUser user=this.service.getUserInfor(userid);
-			request.setAttribute("fullName", user.getUsername());
-			hasPrivilege = this.service.containsUser(chgInfor, userid);
+			//chgInfor = this.service.getChangeInfor(changeNumber);
+			//AgileUser user=this.service.getUserInfor(userid);
+			//request.setAttribute("fullName", user.getUsername());
+			/*hasPrivilege = this.service.containsUser(chgInfor, userid);
 			if (!hasPrivilege) {
 				String path = "default/error.jsp";
 				request.setAttribute("error", "无权限");
@@ -86,43 +81,21 @@ public class GDPServlet extends HttpServlet {
 				logger.debug("forward:" + path);
 				requestDispatcher.forward(request, response);
 				return;
-			}
+			}*/
 		} catch (APIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (HazyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		
-		if (review.equals(chgInfor.getStatus())) {
-			String path = "default/GDPTransfer.jsp";
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
-			logger.debug("forward:" + path);
-			requestDispatcher.forward(request, response);
-		} else if (approve.equals(chgInfor.getStatus())) {
-			request.setAttribute("agileurl", agileurl);
-			String path = "default/GDPManager.jsp";
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
-			logger.debug("forward:" + path);
-			requestDispatcher.forward(request, response);
-		}  else if (finalApprove.equals(chgInfor.getStatus())){
-			request.setAttribute("agileurl", agileurl);
+		request.setAttribute("agileurl", agileurl);
 			String path = "default/GDPSummary.jsp";
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
 			logger.debug("forward:" + path);
 			requestDispatcher.forward(request, response);
-		}else {
-			String path = "default/error.jsp";
-			request.setAttribute("error", "不在有效的流程状态中");
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
-			logger.debug("forward Error:" + path);
-			requestDispatcher.forward(request, response);
-
-		}
+		
 	}
 
 }

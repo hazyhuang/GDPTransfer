@@ -34,7 +34,7 @@ public class GDPTransferServiceDBTestTransferStr {
 	}
 
 
-@Test
+//@Test
 	public void testGetUserInfor() {
 		try {
 			String number = this.service.getDbDAO().transferNumber("O00000007;O00000008");
