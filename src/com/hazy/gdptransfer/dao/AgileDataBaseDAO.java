@@ -27,12 +27,13 @@ import org.apache.log4j.Logger;
 
 import com.hazy.common.HazyUtil;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
+import com.hazy.plmwebpx.model.UserDTO;
 import com.hazy.plmwebpx.model.ChangeRecord;
-import com.hazy.plmwebpx.model.Document;
-import com.hazy.plmwebpx.model.ECN;
+import com.hazy.plmwebpx.model.DocumentDTO;
+import com.hazy.plmwebpx.model.ECNDTO;
 import com.hazy.plmwebpx.model.ItemRecord;
 import com.hazy.plmwebpx.model.ItemReviewRecord;
+
 /**
  * 
  * @author Hua.Huang
@@ -41,46 +42,49 @@ public class AgileDataBaseDAO {
 
 	private static Logger logger = Logger.getLogger(AgileDataBaseDAO.class);
 
-	public AgileUser getUserInfor(String userid) throws SQLException {
+	public UserDTO getUserInfor(String loginid) throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
-		AgileUser obj =null;
+		UserDTO obj = null;
 		try {
 			conn = Helper.getConnection();
 			stmt = conn.createStatement();
-			String sql = "select b.last_name||b.first_name||'('||b.loginid || ')' username from agileuser b where b.loginid='"+userid+"'";
+			String sql = "select b.last_name||b.first_name||'('||b.loginid || ')' username from agileuser b where b.loginid='"
+					+ loginid + "'";
 			logger.debug(sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				obj = new AgileUser(userid);
-
-				
+				obj = new UserDTO(loginid);
 				obj.setUsername(rs.getString("username"));
-
-				
 				logger.debug(obj);
 			}
 		} finally {
 			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
-
 		return obj;
 	}
-	public Integer getECNID(String number) throws SQLException {
+
+	/**
+	 * 从Agile数据库中获取子类ECN的ObjectID 不存在则返回0
+	 * 
+	 * @param number
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getECNObjectID(String number) throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
-	
 		try {
 			conn = Helper.getConnection();
 			stmt = conn.createStatement();
-			String sql = "select * from change where subclass =2473057 and change_Number='"+number+"'";
+			String sql = "select * from change where subclass =2473057 and change_Number='" + number + "'";
 			logger.debug(sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				  return rs.getInt("ID");
-				  
+				return rs.getInt("ID");
+
 			}
 		} finally {
 			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
@@ -89,20 +93,20 @@ public class AgileDataBaseDAO {
 		return 0;
 	}
 
-	public Integer getDocID(String number) throws SQLException {
+	public Integer getDocumentObjectID(String number) throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
-	
+
 		try {
 			conn = Helper.getConnection();
 			stmt = conn.createStatement();
-			String sql = "select * from item where class =9000 and item_number='"+number+"'";
+			String sql = "select * from item where class =9000 and item_number='" + number + "'";
 			logger.debug(sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				  return rs.getInt("ID");
-				  
+				return rs.getInt("ID");
+
 			}
 		} finally {
 			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
@@ -110,12 +114,18 @@ public class AgileDataBaseDAO {
 
 		return 0;
 	}
-	
-	public Collection<ECN> loadECN() throws SQLException {
+
+	/**
+	 * 加载所有子类ECN
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public Collection<ECNDTO> loadAllECN() throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
-		Collection<ECN> RecordSet = new ArrayList<ECN>();
+		Collection<ECNDTO> RecordSet = new ArrayList<ECNDTO>();
 		try {
 			conn = Helper.getConnection();
 			stmt = conn.createStatement();
@@ -123,7 +133,7 @@ public class AgileDataBaseDAO {
 			logger.debug(sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				ECN obj = new ECN();
+				ECNDTO obj = new ECNDTO();
 
 				obj.setObjectID(rs.getInt("ID"));
 				obj.setNumber(rs.getString("change_Number"));
@@ -137,11 +147,11 @@ public class AgileDataBaseDAO {
 		return RecordSet;
 	}
 
-	public Collection<Document> loadDocument() throws SQLException {
+	public Collection<DocumentDTO> loadAllDocument() throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
-		Collection<Document> RecordSet = new ArrayList<Document>();
+		Collection<DocumentDTO> RecordSet = new ArrayList<DocumentDTO>();
 		try {
 			conn = Helper.getConnection();
 			stmt = conn.createStatement();
@@ -149,7 +159,7 @@ public class AgileDataBaseDAO {
 			logger.debug(sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				Document obj = new Document();
+				DocumentDTO obj = new DocumentDTO();
 
 				obj.setObjectID(rs.getInt("ID"));
 				obj.setNumber(rs.getString("Item_Number"));
@@ -163,20 +173,21 @@ public class AgileDataBaseDAO {
 		return RecordSet;
 	}
 
-	public ItemReviewRecord getGDPTransfer(String changeid, String itemNum,String userid) throws SQLException {
+	public ItemReviewRecord loadItemReviewRecord(String changeNumber, String itemNum, String loginid)
+			throws SQLException {
 
-		String sql = "select * from GDP_ItemReviewRecord where changenumber = '"
-		+changeid+"' and userid = '"+userid+"'"+" and itemNumber='"+itemNum+"'";
+		String sql = "select * from GDP_ItemReviewRecord where changenumber = '" + changeNumber + "' and userid = '"
+				+ loginid + "'" + " and itemNumber='" + itemNum + "'";
 
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
-	
-		ItemReviewRecord itemReviewRecord=new ItemReviewRecord();
+
+		ItemReviewRecord itemReviewRecord = new ItemReviewRecord();
 		try {
 			conn = Helper.getConnection();
 			stmt = conn.createStatement();
-            
+
 			logger.debug(sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
@@ -198,152 +209,135 @@ public class AgileDataBaseDAO {
 		return itemReviewRecord;
 	}
 
+	public void createItemRecord(String chgnum, ItemRecord itemRecord) throws SQLException {
 
-
-	public void createItemRecord(String chgnum,ItemRecord itemRecord) throws SQLException {
-		
-		Collection<ItemReviewRecord> ItemReviewRecords=itemRecord.getItemReviewRecords();
-		ItemReviewRecord itemReviewRecord=null;
-		for(ItemReviewRecord record:ItemReviewRecords) {
-			itemReviewRecord=record;
+		Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
+		ItemReviewRecord itemReviewRecord = null;
+		for (ItemReviewRecord record : ItemReviewRecords) {
+			itemReviewRecord = record;
 		}
-		if(itemReviewRecord!=null) {
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		Connection conn= null;
-		try {
-			conn=Helper.getConnection();
+		if (itemReviewRecord != null) {
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			Connection conn = null;
+			try {
+				conn = Helper.getConnection();
 
-			String sql = "insert into GDP_ItemReviewRecord"
-		       +" (tid,changeNumber,itemid,itemNumber,userid,specReview,Reason,"
-					+"docid,docNumber,ecnid,ecnNumber,specReviewValue,username)"
-					+ " values(GDP_ItemReviewRecord_seq_id.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, chgnum);
-			stmt.setInt(2, itemRecord.getItemid());
-			stmt.setString(3, itemRecord.getItemNumber());
-			
-			stmt.setString(4, itemReviewRecord.getUserid());
-			stmt.setString(5, itemReviewRecord.getSpecReview());
-			stmt.setString(6, itemReviewRecord.getReason());
-			stmt.setInt(7, itemReviewRecord.getDocId());
-			stmt.setString(8, itemReviewRecord.getDocNumber());
-			stmt.setInt(9, itemReviewRecord.getEcnId());
-			stmt.setString(10, itemReviewRecord.getEcnNumber());
-			stmt.setString(11, itemReviewRecord.getSpecReviewValue());
-			stmt.setString(12, itemReviewRecord.getUsername());
+				String sql = "insert into GDP_ItemReviewRecord"
+						+ " (tid,changeNumber,itemid,itemNumber,userid,specReview,Reason,"
+						+ "docid,docNumber,ecnid,ecnNumber,specReviewValue,username)"
+						+ " values(GDP_ItemReviewRecord_seq_id.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, chgnum);
+				stmt.setInt(2, itemRecord.getItemid());
+				stmt.setString(3, itemRecord.getItemNumber());
+
+				stmt.setString(4, itemReviewRecord.getUserid());
+				stmt.setString(5, itemReviewRecord.getSpecReview());
+				stmt.setString(6, itemReviewRecord.getReason());
+				stmt.setInt(7, itemReviewRecord.getDocId());
+				stmt.setString(8, itemReviewRecord.getDocNumber());
+				stmt.setInt(9, itemReviewRecord.getEcnId());
+				stmt.setString(10, itemReviewRecord.getEcnNumber());
+				stmt.setString(11, itemReviewRecord.getSpecReviewValue());
+				stmt.setString(12, itemReviewRecord.getUsername());
 				stmt.execute();
-				
-		} finally {
-			HazyUtil.getDBConnectionHelper().close(conn, stmt,rs);
-		}
+
+			} finally {
+				HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
+			}
 		}
 	}
 
 	public void updateItemRecord(ItemRecord itemRecord) throws SQLException {
-		Collection<ItemReviewRecord> ItemReviewRecords=itemRecord.getItemReviewRecords();
-		ItemReviewRecord itemReviewRecord=null;
-		for(ItemReviewRecord record:ItemReviewRecords) {
-			itemReviewRecord=record;
+		Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
+		ItemReviewRecord itemReviewRecord = null;
+		for (ItemReviewRecord record : ItemReviewRecords) {
+			itemReviewRecord = record;
 		}
-		if(itemReviewRecord!=null) {
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		Connection conn= null;
-		try {
-			conn=Helper.getConnection();
-/*
- create table GDP_ItemReviewRecord( ---ItemReviewRecord
-       id number(10) not null,
-       changenumber varchar2(50) not null,----Change_ID
-       itemid number(10) , ---Item_ID
-       userid varchar2(50) not null, ---UserID
-       username varchar2(100) , ---UserID
-       ItemNumber varchar2(50)  not null, ---Item_Number
-       SpecReview varchar2(50), ---SpecReview
-       SpecReviewValue varchar2(100),
-       Reason varchar2(1000), ----Reason
-       docid number(10),     ----Document
-       DocNumber varchar2(30),
-       ecnid number(10),      ----ECN
-       ECNNumber varchar2(30),
-       primary key(changenumber,ItemNumber,userid)
-);*/
-			String sql = "update GDP_ItemReviewRecord "
-		       +" set specReview=?,Reason=?,docid=?, docNumber=?, "
-		       + "ecnid=?,ecnNumber=?,specReviewValue=?"
-					+ " where tid=?";
-			stmt = conn.prepareStatement(sql);
-		
-			stmt.setString(1, itemReviewRecord.getSpecReview());
-			stmt.setString(2, itemReviewRecord.getReason());
-			stmt.setInt(3, itemReviewRecord.getDocId());
-			stmt.setString(4, itemReviewRecord.getDocNumber());
-			stmt.setInt(5, itemReviewRecord.getEcnId());
-			stmt.setString(6, itemReviewRecord.getEcnNumber());
-			stmt.setString(7, itemReviewRecord.getSpecReviewValue());
-			stmt.setInt(8, itemReviewRecord.getRowid());
-			stmt.executeUpdate();
-		}  finally {
-			HazyUtil.getDBConnectionHelper().close(conn, stmt,rs);
+		if (itemReviewRecord != null) {
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			Connection conn = null;
+			try {
+				conn = Helper.getConnection();
+
+				String sql = "update GDP_ItemReviewRecord " + " set specReview=?,Reason=?,docid=?, docNumber=?, "
+						+ "ecnid=?,ecnNumber=?,specReviewValue=?" + " where tid=?";
+				stmt = conn.prepareStatement(sql);
+
+				stmt.setString(1, itemReviewRecord.getSpecReview());
+				stmt.setString(2, itemReviewRecord.getReason());
+				stmt.setInt(3, itemReviewRecord.getDocId());
+				stmt.setString(4, itemReviewRecord.getDocNumber());
+				stmt.setInt(5, itemReviewRecord.getEcnId());
+				stmt.setString(6, itemReviewRecord.getEcnNumber());
+				stmt.setString(7, itemReviewRecord.getSpecReviewValue());
+				stmt.setInt(8, itemReviewRecord.getRowid());
+				stmt.executeUpdate();
+			} finally {
+				HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
+			}
 		}
-		}
-		
+
 	}
 
-	public Collection<ItemReviewRecord> getGDPManager(String changeNumber, String itemNumber, Collection<AgileUser> users) throws SQLException {
-		Collection<ItemReviewRecord> itemReviewRecords=new ArrayList<ItemReviewRecord>();
-		for(AgileUser user:users) {
-			ItemReviewRecord itemReviewRecord=this.getGDPTransfer(changeNumber, itemNumber, user.getLoginid());
-	        fillObjectID(itemReviewRecord);
-			if(itemReviewRecord.getRowid()==0) {
-	        	AgileUser aUser=this.getUserInfor(user.getLoginid());
-	        	itemReviewRecord.setUsername(aUser.getUsername());
-	        }
-			itemReviewRecords.add(itemReviewRecord);	
+	public Collection<ItemReviewRecord> loadItemReviewRecords(String changeNumber, String itemNumber,
+			Collection<UserDTO> users) throws SQLException {
+		Collection<ItemReviewRecord> itemReviewRecords = new ArrayList<ItemReviewRecord>();
+		for (UserDTO user : users) {
+			ItemReviewRecord itemReviewRecord = this.loadItemReviewRecord(changeNumber, itemNumber, user.getLoginid());
+			fillObjectID(itemReviewRecord);
+			if (itemReviewRecord.getRowid() == 0) {
+				UserDTO aUser = this.getUserInfor(user.getLoginid());
+				itemReviewRecord.setUsername(aUser.getUsername());
+			}
+			itemReviewRecords.add(itemReviewRecord);
 		}
 		return itemReviewRecords;
 	}
 
 	private void fillObjectID(ItemReviewRecord itemReviewRecord) throws SQLException {
-		String docNum=itemReviewRecord.getDocNumber();
-		itemReviewRecord.setDocNumber(this.transferNumber(docNum));
-		String ecnNum=itemReviewRecord.getEcnNumber();
+		String docNum = itemReviewRecord.getDocNumber();
+		itemReviewRecord.setDocNumber(this.transferDocumentNumber(docNum));
+		String ecnNum = itemReviewRecord.getEcnNumber();
 		itemReviewRecord.setEcnNumber(this.transferECNNumber(ecnNum));
 	}
-	public String transferECNNumber(String docNum) throws SQLException {
-		StringBuffer strBuffer=new StringBuffer();
-		if(docNum!=null&docNum!="") {
-			String numbers[]=docNum.split(";");
-			for(String num:numbers) {
-				Integer objectID=this.getECNID(num);
-				strBuffer.append(num+":"+objectID+";");
+
+	public String transferECNNumber(String ecnNum) throws SQLException {
+		StringBuffer strBuffer = new StringBuffer();
+		if (ecnNum != null & ecnNum != "") {
+			String numbers[] = ecnNum.split(";");
+			for (String num : numbers) {
+				Integer objectID = this.getECNObjectID(num);
+				strBuffer.append(num + ":" + objectID + ";");
 			}
-			if(numbers.length>0) {
-				strBuffer.deleteCharAt(strBuffer.length()-1);
-			}
-		}
-		return strBuffer.toString();
-	}	
-	public String transferNumber(String docNum) throws SQLException {
-		StringBuffer strBuffer=new StringBuffer();
-		if(docNum!=null&docNum!="") {
-			String numbers[]=docNum.split(";");
-			for(String num:numbers) {
-				Integer objectID=this.getDocID(num);
-				strBuffer.append(num+":"+objectID+";");
-			}
-			if(numbers.length>0) {
-				strBuffer.deleteCharAt(strBuffer.length()-1);
+			if (numbers.length > 0) {
+				strBuffer.deleteCharAt(strBuffer.length() - 1);
 			}
 		}
 		return strBuffer.toString();
 	}
-	public void loadItemRecord(ItemRecord itemRecord, String changeNumber, String userid) throws SQLException {
+
+	public String transferDocumentNumber(String docNum) throws SQLException {
+		StringBuffer strBuffer = new StringBuffer();
+		if (docNum != null & docNum != "") {
+			String numbers[] = docNum.split(";");
+			for (String num : numbers) {
+				Integer objectID = this.getDocumentObjectID(num);
+				strBuffer.append(num + ":" + objectID + ";");
+			}
+			if (numbers.length > 0) {
+				strBuffer.deleteCharAt(strBuffer.length() - 1);
+			}
+		}
+		return strBuffer.toString();
+	}
+
+	public void loadItemRecord(ItemRecord itemRecord, String changeNumber, String loginid) throws SQLException {
 		String itemNumber = itemRecord.getItemNumber();
-		String sql = "select * from GDP_ManagerReview where changenumber = '"
-	+ changeNumber + "' and userid = '"+ userid + "'"
-	 + " and  itemnumber = '"+ itemNumber + "'";
+		String sql = "select * from GDP_ManagerReview where changenumber = '" + changeNumber + "' and userid = '"
+				+ loginid + "'" + " and  itemnumber = '" + itemNumber + "'";
 
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -363,62 +357,51 @@ public class AgileDataBaseDAO {
 			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
 
-		
 	}
 
-	public void createMangerReview(String chgNumber, String userid,ItemRecord itemRecord) throws SQLException {
-	
+	public void createMangerReview(String chgNumber, String userid, ItemRecord itemRecord) throws SQLException {
+
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		Connection conn= null;
+		Connection conn = null;
 		try {
-			conn=Helper.getConnection();
-			/*id number(10) not null,
-		      changenumber varchar2(50) not null,
-		       userid varchar2(50) not null, ---Managerid
-		       itemid number(10) not null,
-		       ItemNumber varchar2(50), ---Item_Number
-		       mangerReview varchar2(1000),  */
-			String sql = "insert into GDP_ManagerReview"
-		       +" (tid,changeNumber,userid,itemNumber,managerReview)"
-					+" values(GDP_ManagerReview_seq_id.nextval,?,?,?,?)";
+			conn = Helper.getConnection();
+			String sql = "insert into GDP_ManagerReview" + " (tid,changeNumber,userid,itemNumber,managerReview)"
+					+ " values(GDP_ManagerReview_seq_id.nextval,?,?,?,?)";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, chgNumber);
 			stmt.setString(2, userid);
 			stmt.setString(3, itemRecord.getItemNumber());
 			stmt.setString(4, itemRecord.getManagerReviewRecord());
-				stmt.execute();
-				
+			stmt.execute();
+
 		} finally {
-			HazyUtil.getDBConnectionHelper().close(conn, stmt,rs);
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
-		
+
 	}
 
-	public void updateMangerReview(String chgNumber, String userid,ItemRecord itemRecord)throws SQLException  {
+	public void updateMangerReview(String chgNumber, String loginid, ItemRecord itemRecord) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		Connection conn= null;
+		Connection conn = null;
 		try {
-			conn=Helper.getConnection();
-            //changeNumber,userid,itemNumber,mangerReview
-			String sql = "update GDP_ManagerReview"
-		       +" set managerReview=?  where tid=?";
+			conn = Helper.getConnection();
+			String sql = "update GDP_ManagerReview" + " set managerReview=?  where tid=?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, itemRecord.getManagerReviewRecord());
 			stmt.setInt(2, itemRecord.getRowid());
-				stmt.executeUpdate();
-		}  finally {
-			HazyUtil.getDBConnectionHelper().close(conn, stmt,rs);
+			stmt.executeUpdate();
+		} finally {
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
-		
+
 	}
 
 	public void loadChangeRecord(ChangeRecord changeRecord, String changeNumber, String userid) throws SQLException {
-		
-		String sql = "select * from GDP_ManagerApprove where changenumber = '"
-	+ changeNumber + "' and userid = '"+ userid + "'";;
 
+		String sql = "select * from GDP_ManagerApprove where changenumber = '" + changeNumber + "' and userid = '"
+				+ userid + "'";
 		Statement stmt = null;
 		ResultSet rs = null;
 		Connection conn = null;
@@ -436,55 +419,45 @@ public class AgileDataBaseDAO {
 			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
 
-		
-		
 	}
 
-	public void createMangerApprove(String chgNumber, String userid, ChangeRecord changeRecord)throws SQLException  {
+	public void createMangerApprove(String chgNumber, String loginid, ChangeRecord changeRecord) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		Connection conn= null;
+		Connection conn = null;
 		try {
-			conn=Helper.getConnection();
-			/*   id number(10) not null,
-      changenumber varchar2(50) not null,
-      userid varchar2(50) not null,  ----Managerid
-       mangerApprove varchar2(1000),       
-       primary key(changenumber,userid) */
-			String sql = "insert into GDP_ManagerApprove"
-		       +" (tid,changeNumber,userid,managerApprove)"
-					+" values(GDP_ManagerApprove_seq_id.nextval,?,?,?)";
+			conn = Helper.getConnection();
+			String sql = "insert into GDP_ManagerApprove" + " (tid,changeNumber,userid,managerApprove)"
+					+ " values(GDP_ManagerApprove_seq_id.nextval,?,?,?)";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, chgNumber);
-			stmt.setString(2, userid);
+			stmt.setString(2, loginid);
 			stmt.setString(3, changeRecord.getManagerApprove());
-				stmt.execute();
-				
+			stmt.execute();
+
 		} finally {
-			HazyUtil.getDBConnectionHelper().close(conn, stmt,rs);
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
-		
+
 	}
 
-	public void updateMangerApprove(String chgNumber, String userid, ChangeRecord changeRecord) throws SQLException {
+	public void updateMangerApprove(String chgNumber, String loginid, ChangeRecord changeRecord) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		Connection conn= null;
+		Connection conn = null;
 		try {
-			conn=Helper.getConnection();
-            //changeNumber,userid,itemNumber,mangerReview
-			String sql = "update GDP_ManagerApprove"
-		       +" set managerApprove=?  where tid=?";
+			conn = Helper.getConnection();
+			String sql = "update GDP_ManagerApprove" + " set managerApprove=?  where tid=?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, changeRecord.getManagerApprove());
 			stmt.setInt(2, changeRecord.getRowid());
-			logger.debug("rowid:"+changeRecord.getRowid());
-				stmt.executeUpdate();
-			
-		}  finally {
-			HazyUtil.getDBConnectionHelper().close(conn, stmt,rs);
+			logger.debug("rowid:" + changeRecord.getRowid());
+			stmt.executeUpdate();
+
+		} finally {
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
 		}
-		
+
 	}
 
 }

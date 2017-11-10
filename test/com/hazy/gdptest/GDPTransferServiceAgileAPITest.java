@@ -15,8 +15,8 @@ import com.hazy.common.HazyUtil;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
-import com.hazy.plmwebpx.model.ChangeInfor;
+import com.hazy.plmwebpx.model.UserDTO;
+import com.hazy.plmwebpx.model.ChangeDTO;
 import com.hazy.plmwebpx.model.ChangeRecord;
 import com.hazy.pool.DataBasePoolFactory;
 
@@ -51,23 +51,15 @@ public class GDPTransferServiceAgileAPITest {
 	}
 	}
 	//@Test
-	public void testDocument() throws SQLException{
-		System.out.println(service.getDocumentJSON());
-	}
-	//@Test
-	public void testECN() throws SQLException{
-		System.out.println(service.getECNJSON());
-	}
-	//@Test
 	public void testSpecReivewList() throws SQLException, APIException{
-		System.out.println(service.getSpecReivewList());
+		System.out.println(service.loadSpecReivewList());
 	}
 	//@Test
 	public void testGetChangeInfor() throws SQLException, APIException{
-		ChangeInfor infor=service.getChangeInfor("DIC0000002");
+		ChangeDTO infor=service.loadChangeInfor("DIC0000002");
 		System.out.println(infor.getStatus());
-		Collection<AgileUser> users=infor.getReviewers();
-		for(AgileUser user:users) {
+		Collection<UserDTO> users=infor.getReviewers();
+		for(UserDTO user:users) {
 			System.out.println(user.getLoginid());
 		}
 	}
@@ -83,15 +75,15 @@ public class GDPTransferServiceAgileAPITest {
 	}
 	//@Test
 	public void testGetManager() throws APIException, SQLException {
-		JSONObject jobj=this.service.getGDPManager("DIC0000002", "yemw");
+		JSONObject jobj=this.service.loadGDPManager("DIC0000002", "yemw");
 		System.out.println(jobj);
 	}
 	//@Test
 		public void testGetChangeInforReview() throws SQLException, APIException{
-			ChangeInfor infor=service.getChangeInfor("DIC0000002","Review2");
+			ChangeDTO infor=service.loadChangeInfor("DIC0000002","Review2");
 			System.out.println(infor.getStatus());
-			Collection<AgileUser> users=infor.getReviewers();
-			for(AgileUser user:users) {
+			Collection<UserDTO> users=infor.getReviewers();
+			for(UserDTO user:users) {
 				System.out.println(user.getLoginid());
 			}
 		}

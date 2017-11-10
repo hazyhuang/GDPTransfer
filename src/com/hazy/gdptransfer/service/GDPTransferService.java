@@ -29,17 +29,18 @@ import com.hazy.common.HazyException;
 import com.hazy.gdptransfer.dao.AgileAPIDAO;
 import com.hazy.gdptransfer.dao.AgileDataBaseDAO;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
-import com.hazy.plmwebpx.model.ChangeInfor;
+import com.hazy.plmwebpx.model.UserDTO;
+import com.hazy.plmwebpx.model.ChangeDTO;
 import com.hazy.plmwebpx.model.ChangeRecord;
-import com.hazy.plmwebpx.model.Document;
-import com.hazy.plmwebpx.model.ECN;
+import com.hazy.plmwebpx.model.DocumentDTO;
+import com.hazy.plmwebpx.model.ECNDTO;
 import com.hazy.plmwebpx.model.ItemRecord;
 import com.hazy.plmwebpx.model.ItemReviewRecord;
-import com.hazy.plmwebpx.model.ListItem;
+import com.hazy.plmwebpx.model.ListItemDTO;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 /**
  * 
  * @author Hua.Huang
@@ -49,7 +50,7 @@ public class GDPTransferService {
 	private AgileAPIDAO apiDAO = null;
 	private AgileDataBaseDAO dbDAO = new AgileDataBaseDAO();
 	private String listAPIName = "RM_DIC_SpecReview";
-    
+
 	public GDPTransferService(IAgileSession session) {
 		this();
 		this.apiDAO = new AgileAPIDAO(session);
@@ -66,26 +67,26 @@ public class GDPTransferService {
 		}
 		this.listAPIName = config.getProperty("ListAPI");
 	}
-    
+
 	public AgileDataBaseDAO getDbDAO() {
 		return dbDAO;
 	}
 
-	public AgileUser getUserInfor(String userid) throws SQLException {
+	public UserDTO loadUserInfor(String userid) throws SQLException {
 		return this.dbDAO.getUserInfor(userid);
 	}
 
-	public ChangeInfor getChangeInfor(String changeNumber) throws APIException {
-		return this.apiDAO.getChangeInfor(changeNumber);
+	public ChangeDTO loadChangeInfor(String changeNumber) throws APIException {
+		return this.apiDAO.loadChangeDTO(changeNumber);
 	}
 
-	public ChangeInfor getChangeInfor(String changeNumber, String statusAPIName) throws APIException {
-		return this.apiDAO.getChangeInfor(changeNumber, statusAPIName);
+	public ChangeDTO loadChangeInfor(String changeNumber, String statusAPIName) throws APIException {
+		return this.apiDAO.loadChangeDTO(changeNumber, statusAPIName);
 	}
 
-	public boolean containsUser(ChangeInfor chg, String userid) {
-		Collection<AgileUser> list = chg.getReviewers();
-		for (AgileUser user : list) {
+	public boolean containsUser(ChangeDTO chg, String userid) {
+		Collection<UserDTO> list = chg.getReviewers();
+		for (UserDTO user : list) {
 			if (userid.equals(user.getLoginid())) {
 				return true;
 			}
@@ -93,47 +94,47 @@ public class GDPTransferService {
 		return false;
 	}
 
-	public JSONArray getECNJSON() throws SQLException {
+	public JSONArray loadAllECNJSON() throws SQLException {
 		JSONArray array = new JSONArray();
-		Collection<ECN> list = dbDAO.loadECN();
-		Iterator<ECN> iter = list.iterator();
+		Collection<ECNDTO> list = dbDAO.loadAllECN();
+		Iterator<ECNDTO> iter = list.iterator();
 		while (iter.hasNext()) {
-			ECN ecn = iter.next();
+			ECNDTO ecn = iter.next();
 			array.add(ecn.toJSON());
 
 		}
 		return array;
 	}
 
-	public JSONArray getDocumentJSON() throws SQLException {
+	public JSONArray loadAllDocumentJSON() throws SQLException {
 		JSONArray array = new JSONArray();
-		Collection<Document> list = dbDAO.loadDocument();
-		Iterator<Document> iter = list.iterator();
+		Collection<DocumentDTO> list = dbDAO.loadAllDocument();
+		Iterator<DocumentDTO> iter = list.iterator();
 		while (iter.hasNext()) {
-			Document ecn = iter.next();
+			DocumentDTO ecn = iter.next();
 			array.add(ecn.toJSON());
 
 		}
 		return array;
 	}
 
-	public JSONArray getSpecReivewList() throws APIException {
+	public JSONArray loadSpecReivewList() throws APIException {
 		JSONArray array = new JSONArray();
-		Collection<ListItem> list = apiDAO.getAgileList(listAPIName);
-		Iterator<ListItem> iter = list.iterator();
+		Collection<ListItemDTO> list = apiDAO.loadSingleList(listAPIName);
+		Iterator<ListItemDTO> iter = list.iterator();
 		while (iter.hasNext()) {
-			ListItem item = iter.next();
+			ListItemDTO item = iter.next();
 			array.add(item.toJSON());
 
 		}
 		return array;
 	}
 
-	public JSONObject getGDPTransfer(String changeNumber, String userid) throws APIException, SQLException {
+	public JSONObject loadGDPTransfer(String changeNumber, String userid) throws APIException, SQLException {
 		Collection<ItemRecord> itemRecords = this.apiDAO.loadAffectItem(changeNumber);
 		for (ItemRecord itemRecord : itemRecords) {
 			String itemNumber = itemRecord.getItemNumber();
-			ItemReviewRecord itemReviewRecord = this.dbDAO.getGDPTransfer(changeNumber, itemNumber, userid);
+			ItemReviewRecord itemReviewRecord = this.dbDAO.loadItemReviewRecord(changeNumber, itemNumber, userid);
 			ArrayList<ItemReviewRecord> list = new ArrayList<ItemReviewRecord>();
 			list.add(itemReviewRecord);
 			itemRecord.setItemReviewRecords(list);
@@ -151,7 +152,6 @@ public class GDPTransferService {
 		Collection<ItemRecord> list = changeRecord.getItemRecords();
 
 		for (ItemRecord itemRecord : list) {
-			//fillAgileObjectID(itemRecord);
 			Integer rowid = getItemReviewRecordID(itemRecord);
 			if (rowid == 0) {
 				dbDAO.createItemRecord(chgNumber, itemRecord);
@@ -160,37 +160,6 @@ public class GDPTransferService {
 			}
 		}
 		return changeRecord.toJSON();
-	}
-
-	private void fillAgileObjectID(ItemRecord itemRecord) throws SQLException {
-		Collection<ItemReviewRecord> ItemReviewRecords = itemRecord.getItemReviewRecords();
-
-		ItemReviewRecord itemReviewRecord = null;
-		for (ItemReviewRecord record : ItemReviewRecords) {
-			itemReviewRecord = record;
-		}
-		if (itemReviewRecord != null) {
-			String ecnNum = itemReviewRecord.getEcnNumber();
-			if (ecnNum != null) {
-				Integer ecnid = getECNID(ecnNum);
-				itemReviewRecord.setEcnId(ecnid);
-			}
-			String docNum = itemReviewRecord.getDocNumber();
-			if (docNum != null) {
-				Integer docid = getDocID(docNum);
-				itemReviewRecord.setDocId(docid);
-			}
-		}
-	}
-
-	private Integer getDocID(String docNum) throws SQLException {
-		return this.dbDAO.getDocID(docNum);
-
-	}
-
-	private Integer getECNID(String ecnNum) throws SQLException {
-		// TODO Auto-generated method stub
-		return this.dbDAO.getECNID(ecnNum);
 	}
 
 	private Integer getItemReviewRecordID(ItemRecord itemRecord) {
@@ -206,21 +175,21 @@ public class GDPTransferService {
 		return 0;
 	}
 
-	public JSONObject getGDPManager(String changeNumber, String userid) throws APIException, SQLException {
+	public JSONObject loadGDPManager(String changeNumber, String userid) throws APIException, SQLException {
 		Collection<ItemRecord> itemRecords = this.apiDAO.loadAffectItem(changeNumber);
-		Collection<AgileUser> users = this.apiDAO.getFunctionUsers(changeNumber, userid);
+		Collection<UserDTO> users = this.apiDAO.loadFunctionUsers(changeNumber, userid);
 		for (ItemRecord itemRecord : itemRecords) {
 			String itemNumber = itemRecord.getItemNumber();
-			Collection<ItemReviewRecord> list = this.dbDAO.getGDPManager(changeNumber, itemNumber, users);
+			Collection<ItemReviewRecord> list = this.dbDAO.loadItemReviewRecords(changeNumber, itemNumber, users);
 			this.dbDAO.loadItemRecord(itemRecord, changeNumber, userid);
 			itemRecord.setItemReviewRecords(list);
 		}
 		ChangeRecord changeRecord = new ChangeRecord(changeNumber);
 		this.dbDAO.loadChangeRecord(changeRecord, changeNumber, userid);
-		
+
 		changeRecord.setManagerID(userid);
-        AgileUser agileUser=this.dbDAO.getUserInfor(userid);
-        changeRecord.setUsername(agileUser.getUsername());
+		UserDTO agileUser = this.dbDAO.getUserInfor(userid);
+		changeRecord.setUsername(agileUser.getUsername());
 		changeRecord.setItemRecords(itemRecords);
 		return changeRecord.toJSON();
 

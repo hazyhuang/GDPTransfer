@@ -20,25 +20,25 @@ import net.sf.json.JSONObject;
  * 
  * @author Hua.Huang
  */
-public class Document {
-	private Object ObjectID;
-	private String Number;
-	public Object getObjectID() {
-		return ObjectID;
+public class ListItemDTO {
+	private String APIName;
+	private String text;
+	public String getAPIName() {
+		return APIName;
 	}
-	public void setObjectID(Object objectID) {
-		ObjectID = objectID;
+	public void setAPIName(String id) {
+		this.APIName = id;
 	}
-	public String getNumber() {
-		return Number;
+	public String getText() {
+		return text;
 	}
-	public void setNumber(String number) {
-		Number = number;
+	public void setText(String text) {
+		this.text = text;
 	}
 	public JSONObject toJSON() {
 		JSONObject jObj=new JSONObject();
-		jObj.put("index", ObjectID);
-		jObj.put("value", Number);
+		jObj.put("value", text);
+		jObj.put("index", APIName);
 		return jObj;
 		}
 

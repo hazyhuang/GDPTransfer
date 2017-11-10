@@ -16,8 +16,8 @@ import com.hazy.common.HazyUtil;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
-import com.hazy.plmwebpx.model.ChangeInfor;
+import com.hazy.plmwebpx.model.UserDTO;
+import com.hazy.plmwebpx.model.ChangeDTO;
 import com.hazy.plmwebpx.model.ChangeRecord;
 import com.hazy.pool.DataBasePoolFactory;
 
@@ -44,18 +44,13 @@ public class GDPTransferServiceDBTest {
 	}
 
 	// @Test
-	public void testDocument() throws SQLException {
-		System.out.println(service.getDocumentJSON());
-	}
-
-	// @Test
 	public void testECN() throws SQLException {
-		System.out.println(service.getECNJSON());
+		System.out.println(service.loadAllECNJSON());
 	}
 
 	// @Test
 	public void testSpecReivewList() throws SQLException, APIException {
-		System.out.println(service.getSpecReivewList());
+		System.out.println(service.loadSpecReivewList());
 	}
 
 	// @Test
@@ -97,7 +92,7 @@ public class GDPTransferServiceDBTest {
 	// @Test
 	public void testGetUserInfor() {
 		try {
-			AgileUser user = this.service.getUserInfor("yemw");
+			UserDTO user = this.service.loadUserInfor("yemw");
 			System.out.println(user.getUsername());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

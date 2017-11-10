@@ -33,6 +33,15 @@
   </servlet-mapping>
   
    <servlet>
+    <servlet-name>GDPSummaryServlet</servlet-name>
+    <servlet-class>com.hazy.gdptransfer.GDPSummaryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GDPSummaryServlet</servlet-name>
+    <url-pattern>/default/GDPSummaryServlet</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
     <servlet-name>TransferServlet</servlet-name>
     <servlet-class>com.hazy.gdptransfer.TransferServlet</servlet-class>
   </servlet>

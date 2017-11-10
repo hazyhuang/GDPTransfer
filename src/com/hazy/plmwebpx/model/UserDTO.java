@@ -20,26 +20,31 @@ import net.sf.json.JSONObject;
  * 
  * @author Hua.Huang
  */
-public class ListItem {
-	private String APIName;
-	private String text;
-	public String getAPIName() {
-		return APIName;
+public class UserDTO {
+	private String loginid;
+	private String username;
+	public UserDTO(String userid){
+		this.loginid=userid;
 	}
-	public void setAPIName(String id) {
-		this.APIName = id;
+	public String getLoginid() {
+		return loginid;
 	}
-	public String getText() {
-		return text;
+	public void setLoginid(String loginid) {
+		this.loginid = loginid;
 	}
-	public void setText(String text) {
-		this.text = text;
+	public String getUsername() {
+		return username;
 	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 	public JSONObject toJSON() {
-		JSONObject jObj=new JSONObject();
-		jObj.put("value", text);
-		jObj.put("index", APIName);
+		JSONObject jObj = new JSONObject();
+		jObj.put("loginid", this.loginid);
+		jObj.put("username", this.username);
+	
 		return jObj;
-		}
-
+	}
+     
 }

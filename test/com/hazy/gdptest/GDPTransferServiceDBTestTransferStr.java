@@ -16,8 +16,8 @@ import com.hazy.common.HazyUtil;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
-import com.hazy.plmwebpx.model.ChangeInfor;
+import com.hazy.plmwebpx.model.UserDTO;
+import com.hazy.plmwebpx.model.ChangeDTO;
 import com.hazy.plmwebpx.model.ChangeRecord;
 import com.hazy.pool.DataBasePoolFactory;
 
@@ -37,7 +37,7 @@ public class GDPTransferServiceDBTestTransferStr {
 //@Test
 	public void testGetUserInfor() {
 		try {
-			String number = this.service.getDbDAO().transferNumber("O00000007;O00000008");
+			String number = this.service.getDbDAO().transferDocumentNumber("O00000007;O00000008");
 			System.out.println(number);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

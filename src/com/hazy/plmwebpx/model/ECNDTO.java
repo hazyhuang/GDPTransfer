@@ -20,31 +20,28 @@ import net.sf.json.JSONObject;
  * 
  * @author Hua.Huang
  */
-public class AgileUser {
-	private String loginid;
-	private String username;
-	public AgileUser(String userid){
-		this.loginid=userid;
+public class ECNDTO {
+	private Object ObjectID;
+	private String Number;
+	public Object getObjectID() {
+		return ObjectID;
 	}
-	public String getLoginid() {
-		return loginid;
+	public void setObjectID(Object objectID) {
+		ObjectID = objectID;
 	}
-	public void setLoginid(String loginid) {
-		this.loginid = loginid;
+	public String getNumber() {
+		return Number;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setNumber(String number) {
+		Number = number;
 	}
 	
 	public JSONObject toJSON() {
-		JSONObject jObj = new JSONObject();
-		jObj.put("loginid", this.loginid);
-		jObj.put("username", this.username);
-	
-		return jObj;
+	JSONObject jObj=new JSONObject();
+	jObj.put("index", ObjectID);
+	jObj.put("value", Number);
+	return jObj;
 	}
-     
+	
+
 }

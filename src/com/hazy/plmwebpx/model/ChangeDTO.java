@@ -22,12 +22,12 @@ import net.sf.json.JSONArray;
  * 
  * @author Hua.Huang
  */
-public class ChangeInfor {
+public class ChangeDTO {
 	private String changeNumber;
 	private String status;
-	private Collection<AgileUser> reviewers;
+	private Collection<UserDTO> reviewers;
 
-	public ChangeInfor(String chgNum) {
+	public ChangeDTO(String chgNum) {
 		this.changeNumber = chgNum;
 	}
 
@@ -47,18 +47,18 @@ public class ChangeInfor {
 		this.status = status;
 	}
 
-	public Collection<AgileUser> getReviewers() {
+	public Collection<UserDTO> getReviewers() {
 		return reviewers;
 	}
 
-	public void setReviewers(Collection<AgileUser> reviewers) {
+	public void setReviewers(Collection<UserDTO> reviewers) {
 		this.reviewers = reviewers;
 	}
 
 	public JSONArray toJSONReviewers() {
 		JSONArray array = new JSONArray();
 
-		for (AgileUser user : reviewers) {
+		for (UserDTO user : reviewers) {
 			array.add(user.toJSON());
 		}
 		return array;

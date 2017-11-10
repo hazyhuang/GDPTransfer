@@ -25,14 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-
-import com.agile.api.APIException;
-import com.agile.api.IAgileSession;
 import com.hazy.common.HazyException;
-import com.hazy.gdptransfer.service.GDPTransferService;
-import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.gdptransfer.util.Helper;
-
 
 /**
  * 
@@ -44,58 +38,33 @@ public class GDPSummaryServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private GDPTransferService service = null;
-
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 
 	}
 
-	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String userid = request.getParameter("agile.userName");// userid
-		String changeNumber = request.getParameter("agile.1047");// userid
+		String userid = request.getParameter("agile.userName");
+		String changeNumber = request.getParameter("agile.1047");
 		request.getSession().setAttribute("agile.userName", userid);
 		request.getSession().setAttribute("agile.1047", changeNumber);
-		IAgileSession session = null;
-		//ChangeInfor chgInfor = null;
-		//boolean hasPrivilege = false;
-		//String review="";
-		//String approve="";
-	
-		String agileurl="";
+		String agileurl = "";
 		try {
-			Properties config=Helper.loadConfig();
-			agileurl=config.getProperty("agileurl");
-			session = AgileSessionHelper.getCurrentSession(request);
-			this.service = new GDPTransferService(session);
-			//chgInfor = this.service.getChangeInfor(changeNumber);
-			//AgileUser user=this.service.getUserInfor(userid);
-			//request.setAttribute("fullName", user.getUsername());
-			/*hasPrivilege = this.service.containsUser(chgInfor, userid);
-			if (!hasPrivilege) {
-				String path = "default/error.jsp";
-				request.setAttribute("error", "无权限");
-				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
-				logger.debug("forward:" + path);
-				requestDispatcher.forward(request, response);
-				return;
-			}*/
-		} catch (APIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Properties config = Helper.loadConfig();
+			agileurl = config.getProperty("agileurl");
+
 		} catch (HazyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		
+		}
+
 		request.setAttribute("agileurl", agileurl);
-			String path = "default/GDPSummary.jsp";
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
-			logger.debug("forward:" + path);
-			requestDispatcher.forward(request, response);
-		
+		String path = "default/GDPSummary.jsp";
+		RequestDispatcher requestDispatcher = request.getRequestDispatcher("/" + path);
+		logger.debug("forward:" + path);
+		requestDispatcher.forward(request, response);
+
 	}
 
 }

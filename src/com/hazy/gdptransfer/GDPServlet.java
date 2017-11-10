@@ -33,8 +33,8 @@ import com.hazy.common.HazyException;
 import com.hazy.gdptransfer.service.GDPTransferService;
 import com.hazy.gdptransfer.util.AgileSessionHelper;
 import com.hazy.gdptransfer.util.Helper;
-import com.hazy.plmwebpx.model.AgileUser;
-import com.hazy.plmwebpx.model.ChangeInfor;
+import com.hazy.plmwebpx.model.UserDTO;
+import com.hazy.plmwebpx.model.ChangeDTO;
 
 /**
  * 
@@ -42,9 +42,6 @@ import com.hazy.plmwebpx.model.ChangeInfor;
  */
 public class GDPServlet extends HttpServlet {
 	private static Logger logger = Logger.getLogger(GDPServlet.class);
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private GDPTransferService service = null;
 
@@ -61,7 +58,7 @@ public class GDPServlet extends HttpServlet {
 		request.getSession().setAttribute("agile.userName", userid);
 		request.getSession().setAttribute("agile.1047", changeNumber);
 		IAgileSession session = null;
-		ChangeInfor chgInfor = null;
+		ChangeDTO chgInfor = null;
 		boolean hasPrivilege = false;
 		String review="";
 		String approve="";
@@ -75,8 +72,8 @@ public class GDPServlet extends HttpServlet {
 			agileurl=config.getProperty("agileurl");
 			session = AgileSessionHelper.getCurrentSession(request);
 			this.service = new GDPTransferService(session);
-			chgInfor = this.service.getChangeInfor(changeNumber);
-			AgileUser user=this.service.getUserInfor(userid);
+			chgInfor = this.service.loadChangeInfor(changeNumber);
+			UserDTO user=this.service.loadUserInfor(userid);
 			request.setAttribute("fullName", user.getUsername());
 			hasPrivilege = this.service.containsUser(chgInfor, userid);
 			if (!hasPrivilege) {

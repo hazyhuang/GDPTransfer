@@ -78,19 +78,19 @@ public class GDPTransferServlet extends HttpServlet {
 			approveAPIName = config.getProperty("approveNodeAPI");
 			if ("loadReview".equals(action)) {
 				retJSON.put("success", true);
-				retJSON.put("msg", this.service.getGDPTransfer(changeNumber, userid));
+				retJSON.put("msg", this.service.loadGDPTransfer(changeNumber, userid));
 			} else if ("loadManager".equals(action)) {
 				logger.debug("managerid:"+userid);
 				retJSON.put("success", true);
-				retJSON.put("msg", this.service.getGDPManager(changeNumber, userid));
+				retJSON.put("msg", this.service.loadGDPManager(changeNumber, userid));
 			} else if ("loadUsers".equals(action)) {
 				retJSON.put("success", true);
-				retJSON.put("msg", this.service.getChangeInfor(changeNumber, approveAPIName).toJSONReviewers());
+				retJSON.put("msg", this.service.loadChangeInfor(changeNumber, approveAPIName).toJSONReviewers());
 			} else if ("loadManagerByUserid".equals(action)) {
 				retJSON.put("success", true);
 				String manager = (String) request.getParameter("Manager");
 				logger.debug("Manager:" + manager);
-				retJSON.put("msg", this.service.getGDPManager(changeNumber, manager));
+				retJSON.put("msg", this.service.loadGDPManager(changeNumber, manager));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();

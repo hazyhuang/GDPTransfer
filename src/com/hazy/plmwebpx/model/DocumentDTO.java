@@ -20,7 +20,7 @@ import net.sf.json.JSONObject;
  * 
  * @author Hua.Huang
  */
-public class ECN {
+public class DocumentDTO {
 	private Object ObjectID;
 	private String Number;
 	public Object getObjectID() {
@@ -35,13 +35,11 @@ public class ECN {
 	public void setNumber(String number) {
 		Number = number;
 	}
-	
 	public JSONObject toJSON() {
-	JSONObject jObj=new JSONObject();
-	jObj.put("index", ObjectID);
-	jObj.put("value", Number);
-	return jObj;
-	}
-	
+		JSONObject jObj=new JSONObject();
+		jObj.put("index", ObjectID);
+		jObj.put("value", Number);
+		return jObj;
+		}
 
 }
