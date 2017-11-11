@@ -33,6 +33,7 @@ public class ItemRecord {
 	private Integer itemid=0;
 	private String description;
 	private String rev;
+	private String managerid;
 	private String managerReviewRecord;
 	private Collection<ItemReviewRecord> itemReviewRecords;
 	
@@ -117,6 +118,14 @@ public class ItemRecord {
 		this.itemReviewRecords = itemReviewRecords;
 	}
 	
+
+	public String getManagerid() {
+		return managerid;
+	}
+
+	public void setManagerid(String managerid) {
+		this.managerid = managerid;
+	}
 
 	public JSONObject toJSON() {
 		JSONObject jObj=new JSONObject();

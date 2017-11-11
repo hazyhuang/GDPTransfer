@@ -175,15 +175,15 @@ function loadList(recordList) {
 				+ count + "' value='" + recordList[j].rowid + "'>";
 
 		var newTd2 = newTr.insertCell(2);
-		getDisabledTextAreaTD(newTd2, "itemNumber", count,
+		initDisabledTextAreaTD(newTd2, "itemNumber", count,
 				recordList[j].itemNumber, 150);
 
 		var newTd3 = newTr.insertCell(3);
-		getDisabledTextAreaTD(newTd3, "description", count,
+		initDisabledTextAreaTD(newTd3, "description", count,
 				recordList[j].description, 300);
 
 		var newTd4 = newTr.insertCell(4);
-		getDisabledTextAreaTD(newTd4, "rev", count, recordList[j].rev, 80);
+		initDisabledTextAreaTD(newTd4, "rev", count, recordList[j].rev, 80);
 
 		var itemReviewRecords = recordList[j].itemReviewRecords;
 		var itemReview;
@@ -191,24 +191,24 @@ function loadList(recordList) {
 		for (var k = 0; k < itemReviewRecords.length; k++) {
 			itemReview = itemReviewRecords[k];
 			var newTd5 = newTr.insertCell(row);
-			getDisabledTextAreaTD(newTd5, "specReview", count,
+			initDisabledTextAreaTD(newTd5, "specReview", count,
 					itemReview.specReviewValue, 100);
 			row = row + 1;
 			var newTd6 = newTr.insertCell(row);
-			getDisabledTextAreaTD(newTd6, "reason", count, itemReview.reason,
+			initDisabledTextAreaTD(newTd6, "reason", count, itemReview.reason,
 					200);
 			row = row + 1;
 			var newTd7 = newTr.insertCell(row);
-			getEnabledLinkTD(newTd7, "documentNumber", count,
-					itemReview.docNumber,"9000",itemReview.docId, 150);
+			initEnabledLinkTD(agileurl,newTd7, "documentNumber",
+					itemReview.docNumber,"9000");
 			row = row + 1;
 			var newTd9 = newTr.insertCell(row);
-			getEnabledLinkTD(newTd9, "ECNNumber", count, itemReview.ecnNumber,"6000",itemReview.ecnId,
-					150);
+			//agileURL,newTD,tdID,value,subclassid
+			initEnabledLinkTD(agileurl,newTd9, "ECNNumber", itemReview.ecnNumber,"6000");
 			row = row + 1;
 		}
 		var newTd8 = newTr.insertCell(row);
-		getEnabledTextAreaTD(newTd8, "managerReviewRecord", count,
+		initEnabledTextAreaTD(newTd8, "managerReviewRecord", count,
 				recordList[j].managerReviewRecord, 300);
 		document.getElementById('recordcount').value = count + 1;
 	}

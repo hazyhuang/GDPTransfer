@@ -27,6 +27,8 @@ input {
 	src="../jquery-easyui-1.4.4/jquery.min.js"></script>
 
 <script type="text/javascript" src="table.js"></script>
+<script type="text/javascript" src="tableJQ.js"></script>
+<script type="text/javascript" src="gdpcommon.js"></script>
 <script type="text/javascript" src="GDPManager.js"></script>
 <script type="text/javascript" src="validmutilist.js"></script>
 <script type="text/javascript">

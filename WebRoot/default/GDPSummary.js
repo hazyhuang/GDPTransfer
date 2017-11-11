@@ -33,43 +33,45 @@ function loadSummary() {
 			}
 		}
 	});
-	
-	for(var i=0;i<managers.length;i++){
-		var managerTable=
-			"<table><tr><td><table id='recordlistTitle"+i+"' class=GMSection></table></td></tr>"
-		+"<tr><td><table id='recordlist"+i+"' class=GMSection></table></td></tr></table>";
-		
+
+	for (var i = 0; i < managers.length; i++) {
+		var managerTable = "<table><tr><td><table id='recordlistTitle" + i
+				+ "' class=GMSection></table></td></tr>"
+				+ "<tr><td><table id='recordlist" + i
+				+ "' class=GMSection></table></td></tr></table>";
+
 		$("#alltable").append(managerTable);
 		console.log(managerTable);
-		
+
 	}
-	for(var i=0;i<managers.length;i++){
-		loadManager(managers[i].loginid,i);
+	for (var i = 0; i < managers.length; i++) {
+		loadManager(managers[i].loginid, i);
 	}
 	$("#msg").html("");
 
 }
-function loadManager(manager,mgrcount){
+function loadManager(manager, mgrcount) {
 	var itemRecordList;
-	$.ajaxSettings.async = false; 
-	$.getJSON("GDPTransferServlet?action=loadManagerByUserid&Manager="+manager, function(result) {
-		
+	$.ajaxSettings.async = false;
+	$.getJSON("GDPTransferServlet?action=loadManagerByUserid&Manager="
+			+ manager, function(result) {
+
 		if (result.success) {
 			itemRecordList = result.msg.itemRecords;
-			//var managerID=result.msg.managerID;
-			var managerUserName=result.msg.username;
-			
-			loadTitle(managerUserName,itemRecordList,mgrcount);
-			loadList(itemRecordList,mgrcount);
-			
+			// var managerID=result.msg.managerID;
+			var managerUserName = result.msg.username;
+
+			loadTitle(managerUserName, itemRecordList, mgrcount);
+			loadList(itemRecordList, mgrcount);
+
 		} else {
-			
+
 			$("#msg").html("错误信息:" + result.msg + " <br>请关闭窗口！");
 		}
 	});
 }
 
-function loadTitle(managerID,recordList,mgrcount) {
+function loadTitle(managerID, recordList, mgrcount) {
 	var dynmicTH;
 	var dynmicTitle;
 	var itemReviewRecords = recordList[0].itemReviewRecords;
@@ -90,23 +92,23 @@ function loadTitle(managerID,recordList,mgrcount) {
 	var tbTitle = "<tr class=GMHeaderRow style='OVERFLOW: auto;'>"
 			+ createTD("") + createTD("") + createTD("附件编号 ")
 			+ createTD("附件名称 ") + createTD("附件版本 ") + dynmicTitle
-			+ createTD(managerID+"<br>部门经理评审意见 ") + "</tr>";
-	$("#recordlistTitle"+mgrcount).append(tbWidth);
-	$("#recordlistTitle"+mgrcount).append(tbTitle);
-	$("#recordlist"+mgrcount).append(tbWidth);
+			+ createTD(managerID + "<br>部门经理评审意见 ") + "</tr>";
+	$("#recordlistTitle" + mgrcount).append(tbWidth);
+	$("#recordlistTitle" + mgrcount).append(tbTitle);
+	$("#recordlist" + mgrcount).append(tbWidth);
 
 }
 
-function loadList(recordList,mgrcount) {
-	var count=0;
+function loadList(recordList, mgrcount) {
+	var count = 0;
 	for (var j = 0; j < recordList.length; j++) {
 
-		var table = document.getElementById("recordlist"+mgrcount);
-		console.log("recordlist"+mgrcount+":"+table);
+		var table = document.getElementById("recordlist" + mgrcount);
+		console.log("recordlist" + mgrcount + ":" + table);
 		var rowscount = table.rows.length;
 		var newTr = table.insertRow(rowscount);
-        
-		var newTrID = "tr"+mgrcount + count;
+
+		var newTrID = "tr" + mgrcount + count;
 		newTr.id = newTrID;
 		newTr.setAttribute("class", "GMDataRow"); // class
 		newTr.setAttribute("className", "GMDataRow"); // class
@@ -126,15 +128,15 @@ function loadList(recordList,mgrcount) {
 				+ count + "' value='" + recordList[j].rowid + "'>";
 
 		var newTd2 = newTr.insertCell(2);
-		getDisabledTextAreaTD(newTd2, "itemNumber", count,
+		initDisabledTextAreaTD(newTd2, "itemNumber", count,
 				recordList[j].itemNumber, 150);
 
 		var newTd3 = newTr.insertCell(3);
-		getDisabledTextAreaTD(newTd3, "description", count,
+		initDisabledTextAreaTD(newTd3, "description", count,
 				recordList[j].description, 300);
 
 		var newTd4 = newTr.insertCell(4);
-		getDisabledTextAreaTD(newTd4, "rev", count, recordList[j].rev, 80);
+		initDisabledTextAreaTD(newTd4, "rev", count, recordList[j].rev, 80);
 
 		var itemReviewRecords = recordList[j].itemReviewRecords;
 		var itemReview;
@@ -142,24 +144,24 @@ function loadList(recordList,mgrcount) {
 		for (var k = 0; k < itemReviewRecords.length; k++) {
 			itemReview = itemReviewRecords[k];
 			var newTd5 = newTr.insertCell(row);
-			getDisabledTextAreaTD(newTd5, "specReview", count,
+			initDisabledTextAreaTD(newTd5, "specReview", count,
 					itemReview.specReviewValue, 100);
 			row = row + 1;
 			var newTd6 = newTr.insertCell(row);
-			getDisabledTextAreaTD(newTd6, "reason", count, itemReview.reason,
+			initDisabledTextAreaTD(newTd6, "reason", count, itemReview.reason,
 					200);
 			row = row + 1;
 			var newTd7 = newTr.insertCell(row);
-			getEnabledLinkTD(newTd7, "documentNumber", count,
-					itemReview.docNumber,"9000",itemReview.docId, 150);
+			initEnabledLinkTD(agileurl, newTd7, "documentNumber",
+					itemReview.docNumber, "9000");
 			row = row + 1;
 			var newTd9 = newTr.insertCell(row);
-			getEnabledLinkTD(newTd9, "ECNNumber", count, itemReview.ecnNumber,"6000",itemReview.ecnId,
-					150);
+			initEnabledLinkTD(agileurl, newTd9, "ECNNumber",
+					itemReview.ecnNumber, "6000");
 			row = row + 1;
 		}
 		var newTd8 = newTr.insertCell(row);
-		getEnabledTextAreaTD(newTd8, "managerReviewRecord", count,
+		initEnabledTextAreaTD(newTd8, "managerReviewRecord", count,
 				recordList[j].managerReviewRecord, 300);
 		document.getElementById('recordcount').value = count + 1;
 	}

@@ -334,6 +334,34 @@ public class AgileDataBaseDAO {
 		return strBuffer.toString();
 	}
 
+	public Collection<ItemRecord> loadItemRecord(String changeNumber, String itemNumber) throws SQLException {
+		Collection<ItemRecord> itemRecords=new ArrayList<ItemRecord>();
+		String sql = "select * from GDP_ManagerReview where changenumber = '"
+		+ changeNumber + "' and  itemnumber = '" + itemNumber + "'";
+
+		Statement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = Helper.getConnection();
+			stmt = conn.createStatement();
+
+			logger.debug(sql);
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				ItemRecord itemRecord=new ItemRecord();
+				itemRecord.setRowid(rs.getInt("TID"));
+				itemRecord.setManagerReviewRecord(rs.getString("managerReview"));
+				itemRecord.setManagerid(rs.getString("userid"));
+                itemRecords.add(itemRecord);
+			}
+		} finally {
+			HazyUtil.getDBConnectionHelper().close(conn, stmt, rs);
+		}
+		return itemRecords;
+
+	}
+	
 	public void loadItemRecord(ItemRecord itemRecord, String changeNumber, String loginid) throws SQLException {
 		String itemNumber = itemRecord.getItemNumber();
 		String sql = "select * from GDP_ManagerReview where changenumber = '" + changeNumber + "' and userid = '"

@@ -6,7 +6,8 @@ pageEncoding="UTF-8"%>
 
 <script type="text/javascript" src="../jquery-easyui-1.4.4/jquery.min.js"></script>
 <script type="text/javascript" src="singlelist.js"></script>
-<script type="text/javascript" src="table.js"></script>
+<script type="text/javascript" src="tableJQ.js"></script>
+<script type="text/javascript" src="gdpcommon.js"></script>
 <script type="text/javascript" src="GDPTransfer.js"></script>
 <script type="text/javascript" src="validmutilist.js"></script>
 <style type="text/css">
@@ -36,8 +37,7 @@ input {
 <script type="text/javascript">
     var userid='<%=request.getParameter("agile.userName")%>'//userid
 	var chgnum='<%=request.getParameter("agile.1047")%>'
-		var username='<%=request.getAttribute("fullName")%>'
-    //http://agileplm:7001/Agile/PLMServlet?action=OpenEmailObject&classid=9000&objid=6758066
+	var username='<%=request.getAttribute("fullName")%>'
     var thisurl=  "<%=request.getContextPath()%>/default/GDPTransfer.jsp";      
 </script>
 </head>

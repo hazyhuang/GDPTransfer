@@ -73,16 +73,16 @@ public class GDPTransferServlet extends HttpServlet {
 		}
 		try {
 			String changeNumber = (String) request.getSession().getAttribute("agile.1047");
-			String userid = (String) request.getSession().getAttribute("agile.userName");
+			String loginid = (String) request.getSession().getAttribute("agile.userName");
 			Properties config = Helper.loadConfig();
 			approveAPIName = config.getProperty("approveNodeAPI");
 			if ("loadReview".equals(action)) {
 				retJSON.put("success", true);
-				retJSON.put("msg", this.service.loadGDPTransfer(changeNumber, userid));
+				retJSON.put("msg", this.service.loadGDPTransfer(changeNumber, loginid));
 			} else if ("loadManager".equals(action)) {
-				logger.debug("managerid:"+userid);
+				logger.debug("managerid:"+loginid);
 				retJSON.put("success", true);
-				retJSON.put("msg", this.service.loadGDPManager(changeNumber, userid));
+				retJSON.put("msg", this.service.loadGDPManager(changeNumber, loginid));
 			} else if ("loadUsers".equals(action)) {
 				retJSON.put("success", true);
 				retJSON.put("msg", this.service.loadChangeInfor(changeNumber, approveAPIName).toJSONReviewers());

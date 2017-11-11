@@ -17,14 +17,19 @@
  * 
  * @author Hua.Huang
  */
-function setValue(list,value,selectTag) {
+function setSingleListValue(list,value,selectTag) {
 	var sIndex = getSingleListIndex(list,value);
 	if(sIndex!=0){
 	selectTag.selectedIndex = sIndex;
 	}
 }
 
-
+/**
+ * 
+ * @param list
+ * @param value
+ * @returns
+ */
 function getSingleListIndex(list,value) {
 	console.log(value);
 	for (var i = 0; i < list.length; i++) {
@@ -34,8 +39,14 @@ function getSingleListIndex(list,value) {
 	}
 	return 0;
 }
-
-function initList(list, selectObj) {
+/**
+ * list为Array
+ * 初始化 列表项
+ * @param list
+ * @param selectObj
+ * @returns
+ */
+function initSingleList(list, selectObj) {
 	// 为1级菜单select添加option
 	var op = new Option("", "");
 	selectObj.options.add(op);

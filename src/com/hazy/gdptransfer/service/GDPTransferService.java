@@ -130,16 +130,20 @@ public class GDPTransferService {
 		return array;
 	}
 
-	public JSONObject loadGDPTransfer(String changeNumber, String userid) throws APIException, SQLException {
+	public JSONObject loadGDPTransfer(String changeNumber, String loginid) throws APIException, SQLException {
 		Collection<ItemRecord> itemRecords = this.apiDAO.loadAffectItem(changeNumber);
 		for (ItemRecord itemRecord : itemRecords) {
 			String itemNumber = itemRecord.getItemNumber();
-			ItemReviewRecord itemReviewRecord = this.dbDAO.loadItemReviewRecord(changeNumber, itemNumber, userid);
+			ItemReviewRecord itemReviewRecord = this.dbDAO.loadItemReviewRecord(changeNumber, itemNumber, loginid);
 			ArrayList<ItemReviewRecord> list = new ArrayList<ItemReviewRecord>();
 			list.add(itemReviewRecord);
 			itemRecord.setItemReviewRecords(list);
-			this.dbDAO.loadItemRecord(itemRecord, changeNumber, userid);
-
+			Collection<ItemRecord> itemRecordsFromDB=this.dbDAO.loadItemRecord(changeNumber, itemNumber);
+            StringBuffer managerReview=new StringBuffer();
+			for(ItemRecord iRecordDB:itemRecordsFromDB) {
+            	managerReview.append(iRecordDB.getManagerid()+":"+iRecordDB.getManagerReviewRecord()+"\n");
+            }
+			itemRecord.setManagerReviewRecord(managerReview.toString());
 		}
 		ChangeRecord changeRecord = new ChangeRecord(changeNumber);
 		changeRecord.setItemRecords(itemRecords);
