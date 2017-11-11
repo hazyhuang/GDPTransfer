@@ -17,6 +17,78 @@
  * 
  * @author Hua.Huang
  */
+
+function getInitItemReviewRecord(){
+	var iobj=new Object();
+	iobj.itemNum="";
+	iobj.ID = 0;
+	iobj.specReview = "";
+	iobj.specReviewValue = "";
+	iobj.reason = "";
+	iobj.documentNumber = "";
+	iobj.docid = "";
+	iobj.ECNNumber = "";
+	iobj.ecnid = "";
+	return iobj;
+}
+
+function validate(rRecord,num,row){
+	if ($('#reason' + num).val() != '')
+		rRecord.reason = $('#reason' + num).val();
+	if (rRecord.specReview == "0") {
+		if (rRecord.reason == '') {
+			alert("第" + (row + 1) + "行,不涉及则  原因不能为空!");
+			return false;
+		}
+	} else if (rRecord.specReview != "0") {
+		rRecord.documentNumber = $('#documentNumber' + num).val();
+		if(rRecord.specReview =="2" ||rRecord.specReview =="3"){
+			if (rRecord.documentNumber == "") {
+				alert("第" + (row + 1) + "行,DocumentNumber 不能为空!");
+				return false;
+				
+			}
+		}
+		if(rRecord.documentNumber!=""){
+			var failNums=validMutilist(rRecord.documentNumber,initList.doclist);
+		      if(failNums.length>0){
+		    	  alert("第" + (row + 1) + "行,DocumentNumber"+failNums.toString()+" 在系统中找不到!");
+					return false;
+		      }
+		}
+		rRecord.ECNNumber = $('#ECNNumber' + num).val();
+		if(rRecord.ECNNumber!=""){
+			var failNums=validMutilist(rRecord.ECNNumber,initList.ecnlist);
+		      if(failNums.length>0){
+		    	  alert("第" + (row + 1) + "行,ECNNumber"+failNums.toString()+" 在系统中找不到!");
+					return  false;
+		      }
+		}
+	}
+	return true;
+}
+
+function getItemRecordJSON(rRecord){
+	var itemjson = {
+			"itemNumber" : rRecord.itemNum,
+			"description" : "",
+			"rev" : "",
+			"managerReviewRecord" : "",
+			"itemReviewRecords" : [ {
+				"rowid" : rRecord.ID,
+				"userid" : rRecord.userid,
+				"username" : rRecord.username,
+				"specReview" : rRecord.specReview,
+				"specReviewValue" : rRecord.specReviewValue,
+				"reason" : rRecord.reason,
+				"docNumber" : rRecord.documentNumber,
+				"ecnNumber" : rRecord.ECNNumber
+		
+			} ]
+		};
+	return itemjson;
+}
+
 function savedata() {
 	url = "<%=request.getContextPath()%>/default/GDPTransfer.jsp";
 	var reload = true;
@@ -27,84 +99,25 @@ function savedata() {
 	for (i = 1; i < rowscount; i++) {
 		var tempid = table.rows[i].id;
 		var num = tempid.substr(2);
-		var ID = 0;
 		var flag = "N";
-		var specReview = "";
-		var specReviewValue = "";
-		var reason = "";
-		var documentNumber = "";
-		var docid = "";
-		var ECNNumber = "";
-		var ecnid = "";
+		var rRecord=getInitItemReviewRecord();
+		rRecord.itemNum= $('#itemNumber' + num).val();
 		var row = i - 1;
 		flag = $('#flag' + num).val();
-		specReview = $('#specReview' + num).val();
-		specReviewValue = $('#specReview' + num).find("option:selected").text();
-		if (specReview == '') {
+		rRecord.specReview = $('#specReview' + num).val();
+		rRecord.specReviewValue = $('#specReview' + num).find("option:selected").text();
+		if (rRecord.specReview == '') {
 			alert("第" + (row + 1) + "行,specReview不能为空!");
 			reload = false;
 			return;
 		}
 		if (flag == "Y") {
-			ID = $('#ID' + num).val();
-			
-			if ($('#reason' + num).val() != '')
-				reason = $('#reason' + num).val();
-			if (specReview == "0") {
-				if (reason == '') {
-					alert("第" + (row + 1) + "行,不涉及则  原因不能为空!");
-					reload = false;
-					return;
-				}
-			} else if (specReview != "0") {
-				documentNumber = $('#documentNumber' + num).val();
-				if(specReview =="2" ||specReview =="3"){
-					if (documentNumber == "") {
-						alert("第" + (row + 1) + "行,DocumentNumber 不能为空!");
-						reload = false;
-						return;
-					}
-				}
-				if(documentNumber!=""){
-					var failNums=validMutilist(documentNumber,initList.doclist);
-				      if(failNums.length>0){
-				    	  alert("第" + (row + 1) + "行,DocumentNumber"+failNums.toString()+" 在系统中找不到!");
-							reload = false;
-							return;
-					      
-				      }
-				
-				}
-				
-				ECNNumber = $('#ECNNumber' + num).val();
-				if(ECNNumber!=""){
-					
-					var failNums=validMutilist(ECNNumber,initList.ecnlist);
-				      if(failNums.length>0){
-				    	  alert("第" + (row + 1) + "行,ECNNumber"+failNums.toString()+" 在系统中找不到!");
-							reload = false;
-							return;
-					      
-				      }
-				}
+			rRecord.ID = $('#ID' + num).val();
+			reload=validate(rRecord,num,row);
+			if(!reload){
+				return;
 			}
-			var itemjson = {
-				"itemNumber" : $('#itemNumber' + num).val(),
-				"description" : "",
-				"rev" : "",
-				"managerReviewRecord" : "",
-				"itemReviewRecords" : [ {
-					"rowid" : ID,
-					"userid" : userid,
-					"username" : username,
-					"specReview" : specReview,
-					"specReviewValue" : specReviewValue,
-					"reason" : reason,
-					"docNumber" : documentNumber,
-					"ecnNumber" : ECNNumber
-			
-				} ]
-			};
+			var itemjson = getItemRecordJSON(rRecord);
 			changeJSON.itemRecords.push(itemjson);
 			reload = true;
 		}
